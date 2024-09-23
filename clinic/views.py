@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_list_or_404, get_object_or_404
 from django.contrib import messages
 
-from .models import Patient
-from .forms import PatientRegistrationForm
+from .models import Patient, MedicalRecord
+from .forms import PatientRegistrationForm, MedicalRecordUpdateForm
 
 
 # Create your views here.
@@ -25,7 +25,11 @@ def patient_list(request):
 
 def patient_data(request, pk):
     patient = get_object_or_404(Patient, pk=pk)
+    medical_records = MedicalRecord.objects.filter(patient=patient).order_by(
+        "-record_date"
+    )
     context = {
+        "medical_records": medical_records,
         "patient": patient,
         "title": f"{patient.first_name} Details",
     }
@@ -49,3 +53,25 @@ def register_patient(request):
     }
 
     return render(request, "clinic/register_patient.html", context)
+
+
+def add_medical_record(request, pk):
+    patient = get_object_or_404(Patient, pk=pk)
+    if request.method == "POST":
+        form = MedicalRecordUpdateForm(request.POST)
+        if form.is_valid():
+            record_title = form.cleaned_data.get("title")
+            record = form.save(commit=False)
+            record.patient = patient
+            record.save()
+            messages.success(request, f"{record_title} added.")
+    else:
+        form = MedicalRecordUpdateForm()
+
+    context = {
+        "patient": patient,
+        "form": form,
+        "title": "Medical Record",
+    }
+
+    return render(request, "clinic/add_medical_record.html", context)

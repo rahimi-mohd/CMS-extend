@@ -22,3 +22,13 @@ class Patient(models.Model):
 
     def __str__(self):
         return self.first_name
+
+
+class MedicalRecord(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    record_date = models.DateTimeField(verbose_name="record_date", default=timezone.now)
+
+    def __str__(self):
+        return self.title

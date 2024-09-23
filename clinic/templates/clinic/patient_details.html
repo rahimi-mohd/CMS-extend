@@ -3,5 +3,14 @@
 {% block main %}
 
 <p>{{ patient.first_name }} {{ patient.last_name }}</p>
+<hr>
 
+<p>{{ patient.first_name }}'s medical record</p>
+
+{% for record in medical_records %}
+<p>{{ record.title }}</p>
+<p>{{ record.description }}</p>
+{% endfor %}
+
+<a href="{% url 'clinic:add_medical_record' patient.pk %}">Add Record</a>
 {% endblock %}

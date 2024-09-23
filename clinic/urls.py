@@ -16,4 +16,9 @@ urlpatterns = [
         views.register_patient,
         name="register_patient",
     ),
+    path(
+        "patient_list/<int:pk>/add_medical_record/",
+        views.add_medical_record,
+        name="add_medical_record",
+    ),
 ]
