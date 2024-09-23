@@ -1,0 +1,13 @@
+{% extends "clinic/base.html" %}
+
+{% block main %}
+
+{% for patient in patients %}
+<p>{{ forloop.counter }}</p>
+<p>{{ patient.first_name }}</p>
+<p><a href="{% url 'clinic:patient_data' patient.pk %}">Get data</a></p>
+{% endfor %}
+
+<a href="{% url 'clinic:register_patient' %}">Register New Patient</a>
+
+{% endblock %}
