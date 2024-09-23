@@ -1,3 +1,12 @@
 <nav style="border-bottom: 2px solid black;">
     <a href="{% url 'clinic:home' %}">Home</a>
+    {% if user.is_authenticated %}
+    <p>Hello, {{ user.username }}</p>
+    <form action="{% url 'accounts:logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Log Out</button>
+    </form>
+    {% else %}
+    <p>Login to see content</p>
+    {% endif %}
 </nav>
