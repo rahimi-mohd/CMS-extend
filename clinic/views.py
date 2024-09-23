@@ -12,9 +12,9 @@ from .forms import PatientRegistrationForm, MedicalRecordUpdateForm, AddAppointm
 # Create your views here.
 @login_required
 def home(request):
-    current_user = request.user
+    # current_user = request.user
     context = {
-        "user": current_user.username,
+        # "user": current_user.username,
         "title": "Home",
     }
     return render(request, "clinic/index.html", context)
