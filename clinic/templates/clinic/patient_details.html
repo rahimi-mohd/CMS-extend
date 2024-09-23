@@ -7,10 +7,23 @@
 
 <p>{{ patient.first_name }}'s medical record</p>
 
+<h3>List of medical Record</h3>
 {% for record in medical_records %}
+<p>{{ forloop.counter }}</p>
 <p>{{ record.title }}</p>
 <p>{{ record.description }}</p>
+<hr>
+{% endfor %}
+
+<h3>List of Appointment</h3>
+{% for appointment in appointments %}
+<p>{{ forloop.counter }}</p>
+<p>{{ appointment.description }}</p>
+<p>{{ appointment.get_time_slot_display }}</p>
+<p>{{ appointment.get_status_display }}</p>
+<hr>
 {% endfor %}
 
 <a href="{% url 'clinic:add_medical_record' patient.pk %}">Add Record</a>
+<a href="{% url 'clinic:add_appointment' patient.pk %}">Add Appointment</a>
 {% endblock %}

@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, get_list_or_404, get_object_or_404
 from django.contrib import messages
+from django.urls import reverse_lazy
+from django.db import IntegrityError
 
-from .models import Patient, MedicalRecord
-from .forms import PatientRegistrationForm, MedicalRecordUpdateForm
+from .models import Patient, MedicalRecord, Appointment
+from .forms import PatientRegistrationForm, MedicalRecordUpdateForm, AddAppointmentForm
 
 
 # Create your views here.
@@ -14,7 +16,8 @@ def home(request):
 
 
 def patient_list(request):
-    patients = get_list_or_404(Patient)
+    # patients = get_list_or_404(Patient)
+    patients = Patient.objects.all()
 
     context = {
         "patients": patients,
@@ -28,8 +31,10 @@ def patient_data(request, pk):
     medical_records = MedicalRecord.objects.filter(patient=patient).order_by(
         "-record_date"
     )
+    appointments = Appointment.objects.filter(patient=patient).order_by("-date")
     context = {
         "medical_records": medical_records,
+        "appointments": appointments,
         "patient": patient,
         "title": f"{patient.first_name} Details",
     }
@@ -75,3 +80,38 @@ def add_medical_record(request, pk):
     }
 
     return render(request, "clinic/add_medical_record.html", context)
+
+
+def add_appointment(request, pk):
+    patient = get_object_or_404(Patient, pk=pk)
+    if request.method == "POST":
+        form = AddAppointmentForm(request.POST)
+        if form.is_valid():
+            appointment = form.save(commit=False)
+            appointment.patient = patient
+            try:
+                appointment.save()
+                messages.success(request, f"appointment added.")
+                return redirect("clinic:patient_data", pk=pk)
+            except IntegrityError:
+                messages.info(request, "Already existed")
+                return redirect("clinic:patient_data", pk=pk)
+    else:
+        form = AddAppointmentForm()
+
+    context = {
+        "patient": patient,
+        "form": form,
+        "title": "Add Appointment",
+    }
+
+    return render(request, "clinic/add_appointment.html", context)
+
+
+def appointment_list(request):
+    appointment_list = get_list_or_404(Appointment)
+    context = {
+        "appointment_list": appointment_list,
+        "title": "List Of Appointment",
+    }
+    return render(request, "clinic/list_of_appointment.html", context)

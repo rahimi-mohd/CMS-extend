@@ -32,3 +32,35 @@ class MedicalRecord(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Appointment(models.Model):
+    TIMESLOT_LIST = {
+        0: "9:00 - 10:00",
+        1: "10:00 - 11:00",
+        2: "11:00 - 12:00",
+        3: "12:00 - 01:00",
+        # doctor lunch break 1pm - 3pm
+        4: "03:00 - 04:00",
+        5: "04:00 - 05:00",
+        6: "05:00 - 06:00",
+    }
+
+    STATUS_LISTS = {
+        1: "Scheduled",
+        2: "Completed",
+        3: "No Show",
+    }
+
+    class Meta:
+        # patient, timeslot and date have to be unique
+        unique_together = ["time_slot", "date"]
+
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    description = models.CharField(max_length=200)
+    time_slot = models.IntegerField(choices=TIMESLOT_LIST)
+    status = models.IntegerField(choices=STATUS_LISTS, default=1)
+    date = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return self.description

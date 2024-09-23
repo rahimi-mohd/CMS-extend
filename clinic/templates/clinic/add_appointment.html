@@ -1,0 +1,13 @@
+{% extends "clinic/base.html" %}
+
+{% block main %}
+
+<p> Appointment for {{ patient.first_name }}</p>
+
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit">Add</button>
+</form>
+
+{% endblock %}

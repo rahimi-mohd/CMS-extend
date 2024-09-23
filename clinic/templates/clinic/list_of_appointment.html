@@ -1,0 +1,12 @@
+{% extends "clinic/base.html" %}
+
+{% block main %}
+
+{% for appointment in appointment_list %}
+<p>{{ forloop.counter }}</p>
+<p>{{ appointment.patient.first_name }}</p>
+<p>{{ appointment.description }}</p>
+
+{% endfor %}
+
+{% endblock %}
