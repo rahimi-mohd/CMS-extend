@@ -1,13 +1,22 @@
 {% extends "clinic/base.html" %}
+{% load crispy_forms_tags %}
 
 {% block main %}
 
-<p> Appointment for {{ patient.first_name }}</p>
+<div class="container m-4">
+    <fieldset class="form-group">
+        <legend class="border-bottom mb-4">{{ patient.first_name }} - New Appointment</legend>
+        <form action="" method="post">
+            <div class="mb-3"></div>
+            {% csrf_token %}
+            {% block form %}
+            {% endblock %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary">Add</button>
+        </form>
 
-<form action="" method="post">
-    {% csrf_token %}
-    {{ form }}
-    <button type="submit">Add</button>
-</form>
+    </fieldset>
+
+</div>
 
 {% endblock %}

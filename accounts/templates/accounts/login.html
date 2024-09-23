@@ -1,10 +1,20 @@
 {% extends "clinic/base.html" %}
+{% load crispy_forms_tags %}
 
 {% block main %}
-<form action="" method="post">
-    {% csrf_token %}
-    {{ form }}
-    <button type="submit">Login</button>
-</form>
+
+<div class="container m-4">
+    <fieldset class="form-group">
+        <legend class="border-bottom mb-4">Login</legend>
+        <form action="" method="post">
+            <div class="mb-3"></div>
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+
+    </fieldset>
+
+</div>
 
 {% endblock %}

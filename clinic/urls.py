@@ -27,4 +27,9 @@ urlpatterns = [
         name="add_appointment",
     ),
     path("appointment_list/", views.appointment_list, name="appointment_list"),
+    path(
+        "appointment_list/<int:pk>/change_status/",
+        views.change_appointment_status,
+        name="change_status",
+    ),
 ]

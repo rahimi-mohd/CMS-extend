@@ -1,12 +1,19 @@
-<nav style="border-bottom: 2px solid black;">
-    <a href="{% url 'clinic:home' %}">Home</a>
-    {% if user.is_authenticated %}
-    <p>Hello, {{ user.username }}</p>
-    <form action="{% url 'accounts:logout' %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Log Out</button>
-    </form>
-    {% else %}
-    <p>Login to see content</p>
-    {% endif %}
+{% load static %}
+<nav class="navbar bg-primary border-bottom border-body" data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'clinic:home' %}"><img src="{% static 'clinic/main-logo.svg' %}" alt="">
+            CMS
+        </a>
+
+        {% if user.is_authenticated %}
+        <p>Hello, {{ user.username }}</p>
+        <form action="{% url 'accounts:logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Log Out</button>
+        </form>
+        {% else %}
+        <p>THIS IS DEBUG: please log in</p>
+        {% endif %}
+
+    </div>
 </nav>
