@@ -84,8 +84,11 @@ def add_medical_record(request, pk):
             record_title = form.cleaned_data.get("title")
             record = form.save(commit=False)
             record.patient = patient
-            record.save()
-            messages.success(request, f"{record_title} added.")
+            try:
+                record.save()
+                messages.success(request, f"{record_title} added.")
+            except ValueError as e:
+                messages.error(request, str(e))
             return redirect("clinic:patient_data", pk=pk)
     else:
         form = MedicalRecordUpdateForm()

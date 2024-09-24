@@ -22,6 +22,7 @@ class MedicalRecordUpdateForm(ModelForm):
     class Meta:
         model = MedicalRecord
         fields = [
+            "doctor",
             "title",
             "description",
         ]

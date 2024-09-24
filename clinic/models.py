@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 
+from accounts.models import Profile
+
 # Create your models here.
 TITLE_CHOICES = {
     1: "Mr.",
@@ -26,12 +28,18 @@ class Patient(models.Model):
 
 class MedicalRecord(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    doctor = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=100)
     description = models.TextField()
     record_date = models.DateTimeField(verbose_name="record_date", default=timezone.now)
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if self.doctor.user_type != Profile.UserType.DOCTOR:
+            raise ValueError("Selected user is not a doctor.")
+        super().save(*args, **kwargs)
 
 
 class Appointment(models.Model):
