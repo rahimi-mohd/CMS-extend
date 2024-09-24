@@ -1,12 +1,10 @@
 {% load static %}
-<nav class="navbar bg-info border-bottom border-body" data-bs-theme="dark">
+<nav class="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'clinic:home' %}"><img src="{% static 'clinic/main-logo.svg' %}" alt="">
             CMS
         </a>
-
         {% if user.is_authenticated %}
-        <p>Hello, {{ user.username }}</p>
         <form action="{% url 'accounts:logout' %}" method="post">
             {% csrf_token %}
             <button type="submit">Log Out</button>

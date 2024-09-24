@@ -3,7 +3,7 @@
 
 {% block main %}
 
-<div class="container m-4">
+<div class="container-flex m-4">
     <fieldset class="form-group">
         <legend class="border-bottom mb-4">{{ patient.first_name }} - Medical Record</legend>
         <form action="" method="post">
@@ -12,7 +12,9 @@
             {% block form %}
             {% endblock %}
             {{ form|crispy }}
-            <button type="submit" class="btn btn-primary">Add</button>
+            <div class="container pt-3 text-end">
+                <button type="submit" class="btn rounded-pill btn-primary">Add</button>
+            </div>
         </form>
 
     </fieldset>

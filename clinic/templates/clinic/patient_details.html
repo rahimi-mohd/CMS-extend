@@ -38,7 +38,9 @@
 
 <!-- medical records -->
 <div class="container p-5">
-    <h3>{{ patient.first_name }}'s Medical Records</h3>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold">{{ patient.first_name }}'s Medical Records</h2>
+    </div>
     <div class="container">
         <table class="table table-striped-columns">
             <thead>
@@ -68,11 +70,20 @@
             </tbody>
         </table>
     </div>
+    <div class="container pt-5 text-end">
+        <a class="btn rounded-pill btn-primary btn-sm" href="{% url 'clinic:add_medical_record' patient.pk %}"
+            role="button">
+            Add Medical Record
+        </a>
+    </div>
 </div>
+
 
 <!-- past appointment -->
 <div class="container p-5">
-    <h3>Past Appointment Records</h3>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold">{{ patient.first_name }}'s Past Appointment Records</h2>
+    </div>
     <table class="table table-striped-columns">
         <thead>
             <tr class="table-info">
@@ -108,17 +119,15 @@
             {% endfor %}
         </tbody>
     </table>
-
+    <div class="container pt-5 text-end">
+        <a class="btn rounded-pill btn-primary btn-sm" href="{% url 'clinic:add_appointment' patient.pk %}"
+            role="button">
+            Add Appointment
+        </a>
+    </div>
 </div>
 
-<div class="container">
-    <a class="btn btn-primary btn-sm" href="{% url 'clinic:add_medical_record' patient.pk %}" role="button">
-        Add Medical Record
-    </a>
-    <a class="btn btn-primary btn-sm" href="{% url 'clinic:add_appointment' patient.pk %}" role="button">
-        Add Appointment
-    </a>
-</div>
+
 
 
 {% endblock %}
