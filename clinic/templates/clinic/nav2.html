@@ -16,7 +16,7 @@
                         aria-expanded="false">
                         {{ user.username }}
                     </a>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu text-center">
                         {% if user.is_authenticated %}
                         {% if user.is_staff %}
                         <li><a class="dropdown-item" href="{% url 'accounts:register_user' %}">Register User</a></li>
