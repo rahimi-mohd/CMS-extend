@@ -1,0 +1,49 @@
+{% extends "clinic/base.html" %}
+
+{% block main %}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            {% if user.profile.get_user_type_display == "Clinic Staff" %}
+            <h4 class="card-title">Staff Profile</h4>
+            {% elif user.profile.get_user_type_display == "Doctor" %}
+            <h4 class="card-title">Doctor Profile</h4>
+            {% elif user.is_staff %}
+            <h4 class="card-title">Admin Profile</h4>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-sm-3"><strong>Username</strong></div>
+                <div class="col-sm-9">{{ user.username }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-3"><strong>Full Name</strong></div>
+                <div class="col-sm-9">{{ user.first_name|title }} {{ patient.last_name|title }}</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-3"><strong>Email</strong></div>
+                <div class="col-sm-9">{{ user.email }}</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-3"><strong>IC Number</strong></div>
+                <div class="col-sm-9">{{ user.profile.ic_number }}</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-3"><strong>Tel Number</strong></div>
+                <div class="col-sm-9">{{ user.profile.phone_number }}</div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-3"><strong>Register Date & Time</strong></div>
+                <div class="col-sm-9">{{ user.profile.register_date }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
