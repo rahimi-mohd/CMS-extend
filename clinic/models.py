@@ -72,3 +72,16 @@ class Appointment(models.Model):
 
     def __str__(self):
         return self.description
+
+
+class Checkin(models.Model):
+    CHECKIN_STATUS = {
+        1: "waiting",
+        2: "done",
+    }
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    status = models.IntegerField(choices=CHECKIN_STATUS, default=1)
+    date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.patient.first_name} checkin at {self.date}"

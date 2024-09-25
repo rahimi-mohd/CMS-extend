@@ -4,12 +4,13 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.db import IntegrityError
 from django.db.models import Q
+from django.utils import timezone
 
-from .models import Patient, MedicalRecord, Appointment
+from .models import Patient, MedicalRecord, Appointment, Checkin
 from .forms import PatientRegistrationForm, MedicalRecordUpdateForm, AddAppointmentForm
 
 
-# Create your views here.
+########################### home page ################################
 @login_required
 def home(request):
     # current_user = request.user
@@ -20,6 +21,7 @@ def home(request):
     return render(request, "clinic/index.html", context)
 
 
+########################### patient handling ################################
 @login_required
 def patient_list(request):
     query = request.GET.get("search", "")
@@ -75,6 +77,7 @@ def register_patient(request):
     return render(request, "clinic/register_patient.html", context)
 
 
+########################### medical records handling ################################
 @login_required
 def add_medical_record(request, pk):
     patient = get_object_or_404(Patient, pk=pk)
@@ -102,6 +105,7 @@ def add_medical_record(request, pk):
     return render(request, "clinic/add_medical_record.html", context)
 
 
+########################### appointment handling ################################
 @login_required
 def add_appointment(request, pk):
     patient = get_object_or_404(Patient, pk=pk)
@@ -150,3 +154,16 @@ def change_appointment_status(request, pk):
         appointment.save()
 
     return redirect("clinic:appointment_list")
+
+
+########################### checkin handling ################################
+@login_required
+def checkin_list(request):
+    today_checkin = Checkin.objects.filter(date=timezone.now().today())
+    context = {
+        "checkin_list": today_checkin,
+        "title": "Check-in",
+    }
+    return render(
+        request,
+    )
