@@ -7,7 +7,12 @@ from django.db.models import Q
 from django.utils import timezone
 
 from .models import Patient, MedicalRecord, Appointment, Checkin
-from .forms import PatientRegistrationForm, MedicalRecordUpdateForm, AddAppointmentForm
+from .forms import (
+    PatientRegistrationForm,
+    MedicalRecordUpdateForm,
+    AddAppointmentForm,
+    CheckInForm,
+)
 
 
 ########################### home page ################################
@@ -159,11 +164,37 @@ def change_appointment_status(request, pk):
 ########################### checkin handling ################################
 @login_required
 def checkin_list(request):
-    today_checkin = Checkin.objects.filter(date=timezone.now().today())
+    today_checkin = Checkin.objects.filter(date=timezone.now().date())
     context = {
         "checkin_list": today_checkin,
-        "title": "Check-in",
+        "today": timezone.now().date(),
+        "title": "Check In List",
     }
-    return render(
-        request,
-    )
+    return render(request, "clinic/checkin_list.html", context)
+
+
+@login_required
+def add_checkin(request, pk):
+    patient = get_object_or_404(Patient, pk=pk)
+    today_checkin = Checkin.objects.filter(
+        patient=patient, date=timezone.now().date(), status=1
+    ).first()
+    if today_checkin:
+        messages.error(
+            request, f"{patient.first_name} already checked in, in waiting list."
+        )
+    else:
+        checkin = Checkin(patient=patient, date=timezone.now().date())
+        messages.success(request, f"{patient.first_name} successfully checked in.")
+        checkin.save()
+
+    return redirect("clinic:patient_data", pk=pk)
+
+
+@login_required
+def update_checkin_status(request, pk):
+    checkin = get_object_or_404(Checkin, pk=pk)
+    if checkin.status == 1:
+        checkin.status = 2
+        checkin.save()
+    return redirect("clinic:checkin_list")

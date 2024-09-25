@@ -81,7 +81,7 @@ class Checkin(models.Model):
     }
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     status = models.IntegerField(choices=CHECKIN_STATUS, default=1)
-    date = models.DateTimeField(default=timezone.now)
+    date = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.patient.first_name} checkin at {self.date}"

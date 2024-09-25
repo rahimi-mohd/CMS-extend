@@ -1,0 +1,49 @@
+{% extends "clinic/base.html" %}
+
+{% block main %}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold">{{ today|date:"SHORT_DATE_FORMAT" }} Patient List</h2>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Full Name</th>
+                <th>Handle</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for checkin in checkin_list %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ checkin.patient.first_name|title }} {{ checkin.patient.last_name|title }}</td>
+                <td>
+                    <a href="{% url 'clinic:add_medical_record' checkin.patient.pk %}"
+                        class="btn btn-primary rounded-pill btn-sm">
+                        Medical Record
+                    </a>
+                </td>
+                <td>
+                    {% if checkin.get_status_display == "waiting" %}
+                    <a href="{% url 'clinic:update_checkin_status' checkin.pk %}"
+                        class="btn btn-primary rounded-pill btn-sm">
+                        {{ checkin.get_status_display }}
+                    </a>
+                    {% elif checkin.get_status_display == "done" %}
+                    <a href="{% url 'clinic:update_checkin_status' checkin.pk %}"
+                        class="btn btn-success rounded-pill btn-sm">
+                        {{ checkin.get_status_display }}
+                    </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}

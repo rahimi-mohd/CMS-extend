@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 
-from .models import Patient, MedicalRecord, Appointment
+from .models import Patient, MedicalRecord, Appointment, Checkin
 
 
 # forms
@@ -47,3 +47,12 @@ class AddAppointmentForm(ModelForm):
             )
 
         return cleaned_data
+
+
+class CheckInForm(ModelForm):
+    class Meta:
+        model = Checkin
+        fields = ["patient"]
+        widgets = {
+            "patient": forms.HiddenInput(),
+        }
