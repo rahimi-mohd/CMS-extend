@@ -11,6 +11,7 @@
             <tr>
                 <th>#</th>
                 <th>Full Name</th>
+                <th>Date</th>
                 <th>Handle</th>
                 <th>Status</th>
             </tr>
@@ -20,6 +21,7 @@
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{ checkin.patient.first_name|title }} {{ checkin.patient.last_name|title }}</td>
+                <td>{{ checkin.date }}</td>
                 <td>
                     <a href="{% url 'clinic:add_medical_record' checkin.patient.pk %}"
                         class="btn btn-primary rounded-pill btn-sm">

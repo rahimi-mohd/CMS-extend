@@ -14,6 +14,8 @@ from .forms import (
     CheckInForm,
 )
 
+from datetime import date
+
 
 ########################### home page ################################
 @login_required
@@ -164,10 +166,11 @@ def change_appointment_status(request, pk):
 ########################### checkin handling ################################
 @login_required
 def checkin_list(request):
-    today_checkin = Checkin.objects.filter(date=timezone.now().date())
+    today = date.today()
+    today_checkin = Checkin.objects.filter(date=today)
     context = {
         "checkin_list": today_checkin,
-        "today": timezone.now().date(),
+        "today": today,
         "title": "Check In List",
     }
     return render(request, "clinic/checkin_list.html", context)
@@ -176,15 +179,16 @@ def checkin_list(request):
 @login_required
 def add_checkin(request, pk):
     patient = get_object_or_404(Patient, pk=pk)
+    today = date.today()
     today_checkin = Checkin.objects.filter(
-        patient=patient, date=timezone.now().date(), status=1
+        patient=patient, date=today, status=1
     ).first()
     if today_checkin:
         messages.error(
             request, f"{patient.first_name} already checked in, in waiting list."
         )
     else:
-        checkin = Checkin(patient=patient, date=timezone.now().date())
+        checkin = Checkin(patient=patient)
         messages.success(request, f"{patient.first_name} successfully checked in.")
         checkin.save()
 
