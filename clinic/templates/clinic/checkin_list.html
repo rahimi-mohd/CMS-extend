@@ -8,7 +8,7 @@
     </div>
     <table class="table table-striped">
         <thead>
-            <tr>
+            <tr class="table-info">
                 <th>#</th>
                 <th>Full Name</th>
                 <th>Date</th>
@@ -38,15 +38,13 @@
                 </td>
                 <td>
                     {% if checkin.get_status_display == "waiting" %}
-                    <a href="{% url 'clinic:update_checkin_status' checkin.pk %}"
-                        class="btn btn-primary rounded-pill btn-sm">
-                        {{ checkin.get_status_display }}
-                    </a>
+                    <p class="text-primary">
+                        {{ checkin.get_status_display|title }}
+                    </p>
                     {% elif checkin.get_status_display == "done" %}
-                    <a href="{% url 'clinic:update_checkin_status' checkin.pk %}"
-                        class="btn btn-success rounded-pill btn-sm">
-                        {{ checkin.get_status_display }}
-                    </a>
+                    <p class="text-success">
+                        {{ checkin.get_status_display|title }}
+                    </p>
                     {% endif %}
                 </td>
                 <td>

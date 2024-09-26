@@ -43,11 +43,11 @@ urlpatterns = [
         views.add_checkin,
         name="patient_checkin",
     ),
-    path(
-        "checkin_list/<int:pk>/update_status/",
-        views.update_checkin_status,
-        name="update_checkin_status",
-    ),
+    # path(
+    #     "checkin_list/<int:pk>/update_status/",
+    #     views.update_checkin_status,
+    #     name="update_checkin_status",
+    # ),
     ############## payment handling ##############
     path(
         "checkin_list/<int:checkin_pk>/payment/",

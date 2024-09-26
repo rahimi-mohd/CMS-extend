@@ -88,24 +88,41 @@ def register_patient(request):
 ########################### medical records handling ################################
 @login_required
 def add_medical_record(request, pk):
-    patient = get_object_or_404(Patient, pk=pk)
+    checkin = Checkin.objects.get(patient_id=pk, status=1)
+
+    """check if the one updating this feature is doctor type user"""
+    if request.user.profile.user_type != Profile.UserType.DOCTOR:
+        messages.error(request, "You do not have permission to add medical records.")
+        return redirect("clinic:checkin_list")
+
+    """check if medical record already updated,
+    to make sure that there's no duplicate medical record in one checkin"""
+    if checkin.medical_record:
+        messages.error(
+            request, "A medical record has already been added for this check-in."
+        )
+        return redirect("clinic:checkin_list")
+
     if request.method == "POST":
         form = MedicalRecordUpdateForm(request.POST)
         if form.is_valid():
             record_title = form.cleaned_data.get("title")
             record = form.save(commit=False)
-            record.patient = patient
+            record.patient = checkin.patient
+            record.doctor = request.user.profile
             try:
                 record.save()
+                checkin.medical_record = record
+                checkin.status = 2
+                checkin.save()
                 messages.success(request, f"{record_title} added.")
             except ValueError as e:
                 messages.error(request, str(e))
-            return redirect("clinic:patient_data", pk=pk)
+            return redirect("clinic:checkin_list")
     else:
         form = MedicalRecordUpdateForm()
 
     context = {
-        "patient": patient,
         "form": form,
         "title": "Medical Record",
     }
@@ -196,13 +213,13 @@ def add_checkin(request, pk):
     return redirect("clinic:patient_data", pk=pk)
 
 
-@login_required
-def update_checkin_status(request, pk):
-    checkin = get_object_or_404(Checkin, pk=pk)
-    if checkin.status == 1:
-        checkin.status = 2
-        checkin.save()
-    return redirect("clinic:checkin_list")
+# @login_required
+# def update_checkin_status(request, pk):
+#     checkin = get_object_or_404(Checkin, pk=pk)
+#     if checkin.status == 1:
+#         checkin.status = 2
+#         checkin.save()
+#     return redirect("clinic:checkin_list")
 
 
 ########################### payment handling ################################
