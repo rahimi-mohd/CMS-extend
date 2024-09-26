@@ -56,6 +56,8 @@
                     <th scope="col">Title</th>
                     <th scope="col">Description</th>
                     <th scope="col">Doctor</th>
+                    <th scope="col">Medical Leaves</th>
+                    <th scope="col">Price</th>
                     <th scope="col">Date</th>
                 </tr>
             </thead>
@@ -66,6 +68,8 @@
                     <td>{{ record.title}}</td>
                     <td>{{ record.description}}</td>
                     <td>{{ record.doctor }}</td>
+                    <td>{{ record.medical_leave}} Days</td>
+                    <td>RM{{ record.price }}</td>
                     <td>{{ record.record_date }}</td>
                 </tr>
                 {% empty %}

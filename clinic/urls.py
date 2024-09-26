@@ -48,4 +48,10 @@ urlpatterns = [
         views.update_checkin_status,
         name="update_checkin_status",
     ),
+    ############## payment handling ##############
+    path(
+        "checkin_list/<int:checkin_pk>/payment/",
+        views.customer_payment,
+        name="payment",
+    ),
 ]

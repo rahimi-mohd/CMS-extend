@@ -14,6 +14,7 @@
                 <th>Date</th>
                 <th>Handle</th>
                 <th>Status</th>
+                <th>Payment</th>
             </tr>
         </thead>
         <tbody>
@@ -40,6 +41,11 @@
                         {{ checkin.get_status_display }}
                     </a>
                     {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'clinic:payment' checkin.pk %}" class="btn btn-primary rounded-pill btn-sm">
+                        RM{{ checkin.medical_record.price }}
+                    </a>
                 </td>
             </tr>
             {% endfor %}

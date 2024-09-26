@@ -26,22 +26,6 @@ class Patient(models.Model):
         return self.first_name
 
 
-class MedicalRecord(models.Model):
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
-    doctor = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
-    title = models.CharField(max_length=100)
-    description = models.TextField()
-    record_date = models.DateTimeField(verbose_name="record_date", default=timezone.now)
-
-    def __str__(self):
-        return self.title
-
-    def save(self, *args, **kwargs):
-        if self.doctor.user_type != Profile.UserType.DOCTOR:
-            raise ValueError("Selected user is not a doctor.")
-        super().save(*args, **kwargs)
-
-
 class Appointment(models.Model):
     TIMESLOT_LIST = {
         0: "9:00 - 10:00",
@@ -74,6 +58,26 @@ class Appointment(models.Model):
         return self.description
 
 
+class MedicalRecord(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    doctor = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    record_date = models.DateTimeField(verbose_name="record_date", default=timezone.now)
+    medical_leave = models.IntegerField(
+        default=0
+    )  # to record if patient get any medical leaves
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if self.doctor.user_type != Profile.UserType.DOCTOR:
+            raise ValueError("Selected user is not a doctor.")
+        super().save(*args, **kwargs)
+
+
 class Checkin(models.Model):
     CHECKIN_STATUS = {
         1: "waiting",
@@ -82,6 +86,27 @@ class Checkin(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     status = models.IntegerField(choices=CHECKIN_STATUS, default=1)
     date = models.DateField(auto_now_add=True)
+    medical_record = models.OneToOneField(
+        MedicalRecord, on_delete=models.CASCADE, null=True
+    )
 
     def __str__(self):
         return f"{self.patient.first_name} checkin at {self.date}"
+
+
+class Payment(models.Model):
+    PAYMENT_STATUS = {
+        1: "unpaid",
+        2: "paid",
+    }
+    PAYMENT_TYPE = {
+        1: "cash",
+        2: "card",
+    }
+    medical_record = models.OneToOneField(MedicalRecord, on_delete=models.CASCADE)
+    payment_status = models.IntegerField(choices=PAYMENT_STATUS, default=1)
+    payment_type = models.IntegerField(choices=PAYMENT_TYPE, default=1)
+    payment_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Payment for {self.medical_record.title} - Status: {self.get_payment_status_display()} "

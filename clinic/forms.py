@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 
-from .models import Patient, MedicalRecord, Appointment, Checkin
+from .models import Patient, MedicalRecord, Appointment, Checkin, Payment
 
 
 # forms
@@ -25,6 +25,8 @@ class MedicalRecordUpdateForm(ModelForm):
             "doctor",
             "title",
             "description",
+            "medical_leave",
+            "price",
         ]
 
 
@@ -56,3 +58,9 @@ class CheckInForm(ModelForm):
         widgets = {
             "patient": forms.HiddenInput(),
         }
+
+
+class PaymentForm(ModelForm):
+    class Meta:
+        model = Payment
+        fields = ["payment_type"]

@@ -1,0 +1,56 @@
+{% extends "clinic/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block main %}
+
+<!-- Payment data -->
+<div class="container p-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold">Payment Details</h2>
+    </div>
+    <div class="container">
+        <table class="table table-striped-columns">
+            <thead>
+                <tr class="table-info">
+                    <th scope="col">Check In Date</th>
+                    <th scope="col">Patient Name</th>
+                    <th scope="col">Doctor Name</th>
+                    <th scope="col">Check In Status</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ checkin.date }}</td>
+                    <td>{{ checkin.patient.first_name|title}}</td>
+                    <td>{{ record.doctor.user.username|title }}</td>
+                    <td>{{ checkin.status }}</td>
+                    <td>{{ record.description }}</td>
+                    <td>RM{{ record.price }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- payment form -->
+<div class="container-flex m-4 p-5">
+    <fieldset class="form-group">
+        <legend class="border-bottom mb-4">Payment</legend>
+        <form action="" method="post">
+            <div class="mb-3"></div>
+            {% csrf_token %}
+            {% block form %}
+            {% endblock %}
+            {{ form|crispy }}
+            <div class="text-end">
+                <button type="submit" class="btn rounded-pill btn-primary">Pay</button>
+            </div>
+        </form>
+
+    </fieldset>
+
+</div>
+
+{% endblock %}

@@ -6,12 +6,13 @@ from django.db import IntegrityError
 from django.db.models import Q
 from django.utils import timezone
 
-from .models import Patient, MedicalRecord, Appointment, Checkin
+from .models import Patient, MedicalRecord, Appointment, Checkin, Payment
+from accounts.models import Profile
 from .forms import (
     PatientRegistrationForm,
     MedicalRecordUpdateForm,
     AddAppointmentForm,
-    CheckInForm,
+    PaymentForm,
 )
 
 from datetime import date
@@ -202,3 +203,49 @@ def update_checkin_status(request, pk):
         checkin.status = 2
         checkin.save()
     return redirect("clinic:checkin_list")
+
+
+########################### payment handling ################################
+def add_payment(request):
+    # list today checkin with done status, because they should already have a price on medical record
+    today = date.today()
+    form = PaymentForm()
+    context = {
+        "form": form,
+        "title": "Payment",
+    }
+    return render(request, "clinic/payment.html", context)
+
+
+def customer_payment(request, checkin_pk):
+    checkin = get_object_or_404(Checkin, pk=checkin_pk)
+    record = checkin.medical_record
+    # check if payment already been made
+    if Payment.objects.filter(medical_record=record).exists():
+        messages.error(
+            request, f"Payment for {checkin.patient.first_name} has already been make."
+        )
+        return redirect("clinic:checkin_list")
+    if request.method == "POST":
+        form = PaymentForm(request.POST)
+        if form.is_valid():
+            payment_type = form.cleaned_data.get("payment_type")
+            pay = form.save(commit=False)
+            pay.medical_record = record
+            pay.payment_status = 2
+            pay.save()
+            messages.success(
+                request,
+                f"Payment for {checkin.patient.first_name}: RM{record.price} successfull.",
+            )
+            return redirect("clinic:checkin_list")
+
+    else:
+        form = PaymentForm()
+    context = {
+        "form": form,
+        "title": f"{record.patient.first_name} Payment",
+        "checkin": checkin,
+        "record": record,
+    }
+    return render(request, "clinic/payment.html", context)
