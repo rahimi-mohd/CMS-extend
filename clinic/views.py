@@ -223,15 +223,15 @@ def add_checkin(request, pk):
 
 
 ########################### payment handling ################################
-def add_payment(request):
-    # list today checkin with done status, because they should already have a price on medical record
-    today = date.today()
-    form = PaymentForm()
-    context = {
-        "form": form,
-        "title": "Payment",
-    }
-    return render(request, "clinic/payment.html", context)
+# def add_payment(request):
+#     # list today checkin with done status, because they should already have a price on medical record
+#     today = date.today()
+#     form = PaymentForm()
+#     context = {
+#         "form": form,
+#         "title": "Payment",
+#     }
+#     return render(request, "clinic/payment.html", context)
 
 
 def customer_payment(request, checkin_pk):
@@ -243,6 +243,9 @@ def customer_payment(request, checkin_pk):
             request, f"Payment for {checkin.patient.first_name} has already been make."
         )
         return redirect("clinic:checkin_list")
+
+    # TODO: check if medical record already been update
+
     if request.method == "POST":
         form = PaymentForm(request.POST)
         if form.is_valid():
@@ -261,7 +264,7 @@ def customer_payment(request, checkin_pk):
         form = PaymentForm()
     context = {
         "form": form,
-        "title": f"{record.patient.first_name} Payment",
+        "title": f"Payment",
         "checkin": checkin,
         "record": record,
     }

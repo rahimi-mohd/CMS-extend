@@ -10,13 +10,13 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
                         {{ user.username }}
                     </a>
-                    <ul class="dropdown-menu text-center">
+                    <ul class="dropdown-menu text-center dropdown-menu-end">
                         {% if user.is_authenticated %}
                         {% if user.is_staff %}
                         <li><a class="dropdown-item" href="{% url 'accounts:register_user' %}">Register User</a></li>
