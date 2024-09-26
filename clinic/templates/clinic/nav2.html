@@ -14,11 +14,12 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
-                        {{ user.username }}
+                        {{ user.username|title }}
                     </a>
                     <ul class="dropdown-menu text-center dropdown-menu-end">
                         {% if user.is_authenticated %}
                         {% if user.is_staff %}
+                        <li><a class="dropdown-item" href="{% url 'accounts:user_list' %}">User List</a></li>
                         <li><a class="dropdown-item" href="{% url 'accounts:register_user' %}">Register User</a></li>
                         {% endif %}
                         <li><a class="dropdown-item" href="{% url 'accounts:user_profile' user.pk %}">Profile</a></li>

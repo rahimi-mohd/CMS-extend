@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_list_or_404, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse_lazy
 from django.db import IntegrityError
 from django.db.models import Q
 from django.utils import timezone

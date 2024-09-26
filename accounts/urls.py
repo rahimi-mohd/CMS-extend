@@ -17,4 +17,10 @@ urlpatterns = [
     ),
     path("register_user/", views.register_user, name="register_user"),
     path("user_profile/<int:pk>/", views.user_profile, name="user_profile"),
+    path("user_list/", views.user_list, name="user_list"),
+    path(
+        "user_profile/<int:pk>/edit_profile/",
+        views.update_user_profile,
+        name="edit_profile",
+    ),
 ]

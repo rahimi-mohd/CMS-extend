@@ -10,10 +10,12 @@
         <!-- welcome message -->
         <p class="lead">
             <strong>
-                Welcome, {{ user.username|title }}! You are logged in as
-                {% if user.profile.get_user_type_display == "Doctor" %} Doctor.
-                {% elif user.profile.get_user_type_display == "Clinic Staff" %} Clinic Staff.
-                {% else %} Admin.
+                {% if user.profile.get_user_type_display == "Doctor" %}
+                Welcome, Doctor <em>{{ user.username|title }}.</em>
+                {% elif user.profile.get_user_type_display == "Clinic Staff" %}
+                Welcome, Staff <em>{{ user.username|title }}.</em>
+                {% else %}
+                Welcome, Admin <em>{{ user.username|title }}</em>.
                 {% endif %}
             </strong>
         </p>

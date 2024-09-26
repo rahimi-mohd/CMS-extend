@@ -20,7 +20,7 @@
             </div>
             <div class="row mb-3">
                 <div class="col-sm-3"><strong>Full Name</strong></div>
-                <div class="col-sm-9">{{ user.first_name|title }} {{ patient.last_name|title }}</div>
+                <div class="col-sm-9">{{ user.first_name|title }} {{ user.last_name|title }}</div>
             </div>
 
             <div class="row mb-3">
@@ -43,6 +43,12 @@
                 <div class="col-sm-9">{{ user.profile.register_date }}</div>
             </div>
         </div>
+    </div>
+    <!-- edit profile button -->
+    <div class="container pt-5 text-end">
+        <a class="btn rounded-pill btn-primary btn-sm" href="{% url 'accounts:edit_profile' user.pk %}" role="button">
+            Edit Profile
+        </a>
     </div>
 </div>
 
