@@ -131,6 +131,16 @@ def add_medical_record(request, pk):
 
 ########################### appointment handling ################################
 @login_required
+def appointment_list(request):
+    appointment_list = Appointment.objects.all().order_by("-date")
+    context = {
+        "appointment_list": appointment_list,
+        "title": "List Of Appointment",
+    }
+    return render(request, "clinic/list_of_appointment.html", context)
+
+
+@login_required
 def add_appointment(request, pk):
     patient = get_object_or_404(Patient, pk=pk)
     if request.method == "POST":
@@ -155,16 +165,6 @@ def add_appointment(request, pk):
     }
 
     return render(request, "clinic/add_appointment.html", context)
-
-
-@login_required
-def appointment_list(request):
-    appointment_list = Appointment.objects.all().order_by("-date")
-    context = {
-        "appointment_list": appointment_list,
-        "title": "List Of Appointment",
-    }
-    return render(request, "clinic/list_of_appointment.html", context)
 
 
 @login_required
