@@ -24,7 +24,7 @@
             <div class="row gy-5 d-flex justify-content-center">
                 <!-- menu for patient list -->
                 <div class="col py-2 text-center">
-                    <img src="{% static 'clinic/health-report.png' %}" class="img-thumbnail" alt="">
+                    <img src="{% static 'clinic/health-report.png' %}" class="img-thumbnail rounded-circle" alt="">
                     <hr>
                     <a class="btn btn-primary btn-sm" href="{% url 'clinic:patient_list' %}">
                         Patient List
@@ -32,7 +32,7 @@
                 </div>
                 <!-- menu for appointment list -->
                 <div class="col py-2 text-center">
-                    <img src="{% static 'clinic/appointment.png' %}" class="img-thumbnail" alt="">
+                    <img src="{% static 'clinic/appointment.png' %}" class="img-thumbnail rounded-circle" alt="">
                     <hr>
                     <a class="btn btn-primary btn-sm" href="{% url 'clinic:appointment_list' %}">
                         Appointment List
@@ -40,7 +40,7 @@
                 </div>
                 <!-- menu for checkin list -->
                 <div class="col py-2 text-center">
-                    <img src="{% static 'clinic/doctor-visit.png' %}" class="img-thumbnail" alt="">
+                    <img src="{% static 'clinic/doctor-visit.png' %}" class="img-thumbnail rounded-circle" alt="">
                     <hr>
                     <a class="btn btn-primary btn-sm" href="{% url 'clinic:checkin_list' %}">
                         Check-In List

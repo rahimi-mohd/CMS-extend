@@ -133,8 +133,14 @@ def add_medical_record(request, pk):
 ########################### appointment handling ################################
 @login_required
 def appointment_list(request):
-    appointment_list = Appointment.objects.all().order_by("-date")
+    today = date.today()
+    """appointment list excluding today appointment"""
+    appointment_list = Appointment.objects.all().exclude(date=today).order_by("-date")
+    """today appointment only"""
+    today_appointment = Appointment.objects.filter(date=today)
     context = {
+        "today": today,
+        "today_appointment": today_appointment,
         "appointment_list": appointment_list,
         "title": "List Of Appointment",
     }
