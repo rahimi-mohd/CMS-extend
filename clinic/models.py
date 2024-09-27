@@ -3,6 +3,8 @@ from django.utils import timezone
 
 from accounts.models import Profile
 
+from datetime import date
+
 # Create your models here.
 TITLE_CHOICES = {
     1: "Mr.",
@@ -52,7 +54,7 @@ class Appointment(models.Model):
     description = models.CharField(max_length=200)
     time_slot = models.IntegerField(choices=TIMESLOT_LIST)
     status = models.IntegerField(choices=STATUS_LISTS, default=1)
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField(default=date.today)
 
     def __str__(self):
         return self.description
