@@ -1,9 +1,8 @@
-from django.shortcuts import render, redirect, get_list_or_404, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.db.models import Q
-from django.utils import timezone
 
 from .models import Patient, MedicalRecord, Appointment, Checkin, Payment
 from accounts.models import Profile
@@ -87,7 +86,8 @@ def register_patient(request):
 ########################### medical records handling ################################
 @login_required
 def add_medical_record(request, pk):
-    checkin = Checkin.objects.get(patient_id=pk, status=1)
+    today = date.today()
+    checkin = Checkin.objects.get(patient_id=pk, status=1, date=today)
 
     """check if the one updating this feature is doctor type user"""
     if request.user.profile.user_type != Profile.UserType.DOCTOR:
@@ -123,6 +123,7 @@ def add_medical_record(request, pk):
 
     context = {
         "form": form,
+        "checkin": checkin,
         "title": "Medical Record",
     }
 
@@ -210,15 +211,6 @@ def add_checkin(request, pk):
         checkin.save()
 
     return redirect("clinic:patient_data", pk=pk)
-
-
-# @login_required
-# def update_checkin_status(request, pk):
-#     checkin = get_object_or_404(Checkin, pk=pk)
-#     if checkin.status == 1:
-#         checkin.status = 2
-#         checkin.save()
-#     return redirect("clinic:checkin_list")
 
 
 ########################### payment handling ################################

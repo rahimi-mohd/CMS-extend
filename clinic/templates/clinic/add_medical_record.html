@@ -5,7 +5,8 @@
 
 <div class="container-flex m-4">
     <fieldset class="form-group">
-        <legend class="border-bottom mb-4">{{ patient.first_name }} - Medical Record</legend>
+        <legend class="border-bottom mb-4">{{ checkin.patient.first_name }} - Medical Record ({{ checkin.date }})
+        </legend>
         <form action="" method="post">
             <div class="mb-3"></div>
             {% csrf_token %}
