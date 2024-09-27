@@ -138,7 +138,7 @@ def appointment_list(request):
         "appointment_list": appointment_list,
         "title": "List Of Appointment",
     }
-    return render(request, "clinic/list_of_appointment.html", context)
+    return render(request, "clinic/appointment_list.html", context)
 
 
 @login_required
@@ -169,16 +169,52 @@ def add_appointment(request, pk):
 
 
 @login_required
-def change_appointment_status(request, pk):
+def move_to_checkin(request, pk):
+    """Handle moving patients to check-in from the appointment list."""
+    today = date.today()
     appointment = get_object_or_404(Appointment, pk=pk)
-    if appointment.status == 1:
-        appointment.status = 2
-        appointment.save()
-    elif appointment.status == 2:
-        appointment.status = 3
-        appointment.save()
 
-    return redirect("clinic:appointment_list")
+    # Ensure the appointment is for today
+    if appointment.date != today:
+        messages.error(
+            request, "You can only check in patients with today's appointment."
+        )
+        return redirect("clinic:appointment_list")
+
+    # Check if a check-in already exists for today with status "waiting"
+    existing_checkin = Checkin.objects.filter(
+        patient=appointment.patient, date=today, status=1
+    ).exists()
+
+    if existing_checkin:
+        messages.info(request, "Patient is already checked in and waiting.")
+        return redirect("clinic:appointment_list")
+
+    # Check if the patient has already checked in today but the status is "done"
+    previous_checkin = (
+        Checkin.objects.filter(patient=appointment.patient, date=today)
+        .exclude(status=1)
+        .exists()
+    )
+
+    if previous_checkin:
+        messages.info(
+            request,
+            "Patient has completed a previous check-in but can be re-checked in.",
+        )
+
+    checkin = Checkin.objects.create(
+        patient=appointment.patient,
+        status=1,
+        date=today,
+    )
+
+    """change appointment status to Completed so that I can disabled to button/link"""
+    appointment.status = 2
+    appointment.save()
+
+    messages.success(request, f"{appointment.patient.first_name} has been checked in.")
+    return redirect("clinic:checkin_list")
 
 
 ########################### checkin handling ################################

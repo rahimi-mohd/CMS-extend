@@ -31,11 +31,6 @@ urlpatterns = [
         name="add_appointment",
     ),
     path("appointment_list/", views.appointment_list, name="appointment_list"),
-    path(
-        "appointment_list/<int:pk>/change_status/",
-        views.change_appointment_status,
-        name="change_status",
-    ),
     ############## check in handling ##############
     path("checkin_list/", views.checkin_list, name="checkin_list"),
     path(
@@ -43,11 +38,11 @@ urlpatterns = [
         views.add_checkin,
         name="patient_checkin",
     ),
-    # path(
-    #     "checkin_list/<int:pk>/update_status/",
-    #     views.update_checkin_status,
-    #     name="update_checkin_status",
-    # ),
+    path(
+        "appointment_list/<int:pk>/checkin_list/",
+        views.move_to_checkin,
+        name="move_to_checkin",
+    ),
     ############## payment handling ##############
     path(
         "checkin_list/<int:checkin_pk>/payment/",
