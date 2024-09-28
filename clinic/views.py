@@ -256,28 +256,25 @@ def add_checkin(request, pk):
 
 
 ########################### payment handling ################################
-# def add_payment(request):
-#     # list today checkin with done status, because they should already have a price on medical record
-#     today = date.today()
-#     form = PaymentForm()
-#     context = {
-#         "form": form,
-#         "title": "Payment",
-#     }
-#     return render(request, "clinic/payment.html", context)
-
-
+@login_required
 def customer_payment(request, checkin_pk):
     checkin = get_object_or_404(Checkin, pk=checkin_pk)
     record = checkin.medical_record
+
+    """check if record already been updated"""
+    if not record:
+        messages.error(
+            request,
+            f"No medical record found for {checkin.patient.first_name}. Please update the medical checkup before proceeding with the payment.",
+        )
+        return redirect("clinic:checkin_list")
+
     # check if payment already been made
     if Payment.objects.filter(medical_record=record).exists():
         messages.error(
             request, f"Payment for {checkin.patient.first_name} has already been make."
         )
         return redirect("clinic:checkin_list")
-
-    # TODO: check if medical record already been update
 
     if request.method == "POST":
         form = PaymentForm(request.POST)

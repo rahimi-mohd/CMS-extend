@@ -48,9 +48,16 @@
                     {% endif %}
                 </td>
                 <td>
+                    {% if checkin.medical_record %}
                     <a href="{% url 'clinic:payment' checkin.pk %}" class="btn btn-primary rounded-pill btn-sm">
                         RM{{ checkin.medical_record.price }}
                     </a>
+                    {% else %}
+                    <a href="{% url 'clinic:payment' checkin.pk %}"
+                        class="btn btn-primary rounded-pill btn-sm disabled">
+                        RM0.00
+                    </a>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
