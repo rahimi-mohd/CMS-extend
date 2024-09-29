@@ -5,9 +5,12 @@ from playwright.sync_api import Page, expect
 from config import User
 
 URL = "http://localhost:8000"
+
+# list of users
 admin = User("admin", "12", "Admin")
 clinic_staff = User("staff1", "bingo132$", "Staff")
 doctor = User("doctor1", "dd-1-clinic", "Doctor")
+not_existed_user = User("not_existed", "never_registered")
 
 
 # login for admin
