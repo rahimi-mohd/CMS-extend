@@ -8,6 +8,7 @@ class Profile(models.Model):
     class UserType(models.IntegerChoices):
         CLINIC_STAFF = 1, "Clinic Staff"
         DOCTOR = 2, "Doctor"
+        ADMIN = 3, "Admin"
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     user_type = models.IntegerField(
