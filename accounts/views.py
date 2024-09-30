@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 from .forms import CustomUserCreationForm, EditUserForm, EditProfileForm
 from .models import Profile
@@ -40,7 +41,18 @@ def user_profile(request, pk):
 # this can be used by admin only!
 @login_required
 def user_list(request):
-    users = User.objects.all()
+    # users = User.objects.all()
+    query = request.GET.get("search", "")
+
+    if query:
+        users = User.objects.filter(
+            Q(first_name__icontains=query)
+            | Q(last_name__icontains=query)
+            | Q(username__icontains=query)
+        )
+    else:
+        users = User.objects.all()
+
     context = {
         "users": users,
         "title": "User List",
@@ -49,7 +61,6 @@ def user_list(request):
     return render(request, "accounts/user_list.html", context)
 
 
-# FIXME: this function return error if i want to edit my own profile?
 @login_required
 def update_user_profile(request, pk):
     """check if current logged in user is admin"""

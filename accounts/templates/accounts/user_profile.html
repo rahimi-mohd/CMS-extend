@@ -24,6 +24,11 @@
             </div>
 
             <div class="row mb-3">
+                <div class="col-sm-3"><strong>Staff Status</strong></div>
+                <div class="col-sm-9">{{ user.profile.get_user_type_display }}</div>
+            </div>
+
+            <div class="row mb-3">
                 <div class="col-sm-3"><strong>Email</strong></div>
                 <div class="col-sm-9">{{ user.email }}</div>
             </div>
