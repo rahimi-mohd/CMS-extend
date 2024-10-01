@@ -28,6 +28,7 @@ class MedicalRecordUpdateForm(ModelForm):
             "title",
             "description",
             "medical_leave",
+            "medicine",
             "price",
         ]
 

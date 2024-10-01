@@ -1,3 +1,4 @@
+from contextlib import nullcontext
 from django.db import models
 from django.utils import timezone
 
@@ -26,6 +27,49 @@ class Patient(models.Model):
 
     def __str__(self):
         return self.first_name
+
+
+class Medicine(models.Model):
+    MEDICINCE_CATEGORY = {
+        1: "Analgesic",
+        2: "Antibiotic",
+        3: "Antidepressant",
+        4: "Antidiabetic",
+        5: "Antifungal",
+        6: "Antipyretic",
+        7: "Antiseptic",
+        8: "Antiviral",
+    }
+    DOSAGE_FORM_CATEGORY = {
+        1: "Capsule",
+        2: "Cream",
+        3: "Drops",
+        4: "Inhaler",
+        5: "Injection",
+        6: "Ointment",
+        7: "Syrup",
+        8: "Tablet",
+    }
+    INDICATION_CATEGORY = {
+        1: "Depression",
+        2: "Diabetes",
+        3: "Fever",
+        4: "Fungus",
+        5: "Infection",
+        6: "Pain",
+        7: "Virus",
+        8: "Wound",
+    }
+
+    name = models.CharField(max_length=50)
+    category = models.IntegerField(default=1, choices=MEDICINCE_CATEGORY)
+    dosage_form = models.IntegerField(default=1, choices=DOSAGE_FORM_CATEGORY)
+    indication = models.IntegerField(default=1, choices=INDICATION_CATEGORY)
+    strength = models.IntegerField(default=1)  # in mg
+    quantity_in_stock = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.name} {self.strength}mg"
 
 
 class Appointment(models.Model):
@@ -63,6 +107,7 @@ class Appointment(models.Model):
 class MedicalRecord(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     doctor = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
+    medicine = models.ManyToManyField(Medicine)
     title = models.CharField(max_length=100)
     description = models.TextField()
     record_date = models.DateTimeField(verbose_name="record_date", default=timezone.now)
