@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 
-from .models import Patient, MedicalRecord, Appointment, Checkin, Payment
+from .models import Patient, MedicalRecord, Appointment, Checkin, Payment, Medicine
 
 from datetime import date
 
@@ -21,6 +21,13 @@ class PatientRegistrationForm(ModelForm):
 
 
 class MedicalRecordUpdateForm(ModelForm):
+
+    medicines = forms.ModelMultipleChoiceField(
+        queryset=Medicine.objects.all().exclude(quantity_in_stock__lte=0),
+        widget=forms.CheckboxSelectMultiple(),
+        required=False,
+    )
+
     class Meta:
         model = MedicalRecord
         fields = [
@@ -28,9 +35,18 @@ class MedicalRecordUpdateForm(ModelForm):
             "title",
             "description",
             "medical_leave",
-            "medicine",
+            "medicines",
             "price",
         ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for medicine in self.fields["medicines"].queryset:
+            medicine_quantity = medicine.quantity_in_stock
+            # You can customize the label to include the quantity
+            self.fields["medicines"].label_from_instance = (
+                lambda obj: f"{obj.name} (Stock: {medicine_quantity})"
+            )
 
 
 class AddAppointmentForm(ModelForm):

@@ -1,4 +1,3 @@
-from contextlib import nullcontext
 from django.db import models
 from django.utils import timezone
 
@@ -76,7 +75,7 @@ class Appointment(models.Model):
 class MedicalRecord(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     doctor = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
-    medicine = models.ManyToManyField(Medicine)
+    medicine = models.ManyToManyField(Medicine, blank=True)
     title = models.CharField(max_length=100)
     description = models.TextField()
     record_date = models.DateTimeField(verbose_name="record_date", default=timezone.now)

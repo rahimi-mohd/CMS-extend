@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.db.models import Q
 
 from .models import Patient, MedicalRecord, Appointment, Checkin, Payment, Medicine
@@ -84,6 +84,69 @@ def register_patient(request):
 
 
 ########################### medical records handling ################################
+# @login_required
+# def add_medical_record(request, pk):
+#     today = date.today()
+#     checkin = Checkin.objects.get(patient_id=pk, status=1, date=today)
+
+#     """check if the one updating this feature is doctor type user"""
+#     if request.user.profile.user_type != Profile.UserType.DOCTOR:
+#         messages.error(request, "You do not have permission to add medical records.")
+#         return redirect("clinic:checkin_list")
+
+#     """check if medical record already updated,
+#     to make sure that there's no duplicate medical record in one checkin"""
+#     if checkin.medical_record:
+#         messages.error(
+#             request, "A medical record has already been added for this check-in."
+#         )
+#         return redirect("clinic:checkin_list")
+
+#     if request.method == "POST":
+#         form = MedicalRecordUpdateForm(request.POST)
+#         if form.is_valid():
+
+#             """handle medicine"""
+#             medicines = form.cleaned_data.get("medicines")
+#             for med in medicines:
+#                 """if medicine not enough stock, return error"""
+#                 if med.quantity_in_stock <= 0:
+#                     messages.error(request, f"Not enough {med.name} Stock!")
+#                     return redirect(
+#                         "clinic:add_medical_record", checkin.medical_record.id
+#                     )
+
+#             record_title = form.cleaned_data.get("title")
+#             record = form.save(commit=False)
+#             record.patient = checkin.patient
+#             record.doctor = request.user.profile
+#             try:
+#                 """save each medicine record"""
+#                 for med in medicines:
+#                     med.quantity_in_stock -=1
+#                     med.save()
+#                 """save record"""
+#                 record.save()
+#                 """handle checkin"""
+#                 checkin.medical_record = record
+#                 checkin.status = 2
+#                 checkin.save()
+#                 messages.success(request, f"{record_title} added.")
+#             except ValueError as e:
+#                 messages.error(request, str(e))
+#             return redirect("clinic:checkin_list")
+#     else:
+#         form = MedicalRecordUpdateForm()
+
+#     context = {
+#         "form": form,
+#         "checkin": checkin,
+#         "title": "Medical Record",
+#     }
+
+#     return render(request, "clinic/add_medical_record.html", context)
+
+
 @login_required
 def add_medical_record(request, pk):
     today = date.today()
@@ -102,23 +165,55 @@ def add_medical_record(request, pk):
         )
         return redirect("clinic:checkin_list")
 
+    form = MedicalRecordUpdateForm()
+
     if request.method == "POST":
         form = MedicalRecordUpdateForm(request.POST)
         if form.is_valid():
+            medicines = form.cleaned_data.get("medicines")
+            stock_error = False
+
+            # Check for stock availability
+            for med in medicines:
+                if med.quantity_in_stock <= 0:
+                    messages.error(request, f"Not enough stock for {med.name}!")
+                    stock_error = True
+
+            if stock_error:
+                # Render the form with the error message instead of redirecting
+                return render(
+                    request,
+                    "clinic/add_medical_record.html",
+                    {"form": form, "checkin": checkin, "title": "Medical Record"},
+                )
+
             record_title = form.cleaned_data.get("title")
             record = form.save(commit=False)
             record.patient = checkin.patient
             record.doctor = request.user.profile
+
             try:
-                record.save()
-                checkin.medical_record = record
-                checkin.status = 2
-                checkin.save()
+                # Save each medicine record and update stock
+                with transaction.atomic():
+                    for med in medicines:
+                        med.quantity_in_stock -= 1
+                        med.save()
+                    record.save()
+                    checkin.medical_record = record
+                    checkin.status = 2
+                    checkin.save()
+
                 messages.success(request, f"{record_title} added.")
+                return redirect("clinic:checkin_list")
             except ValueError as e:
                 messages.error(request, str(e))
-            return redirect("clinic:checkin_list")
+                return render(
+                    request,
+                    "clinic/add_medical_record.html",
+                    {"form": form, "checkin": checkin, "title": "Medical Record"},
+                )
     else:
+        # If the request method is GET, you can initialize the form with existing data if needed.
         form = MedicalRecordUpdateForm()
 
     context = {
@@ -299,6 +394,21 @@ def customer_payment(request, checkin_pk):
         "record": record,
     }
     return render(request, "clinic/payment.html", context)
+
+
+########################### Inventory handling ################################
+def inventory_list(request):
+    medicines = (
+        Medicine.objects.all()
+        .order_by("quantity_in_stock")
+        .exclude(quantity_in_stock__lte=0)
+    )
+
+    context = {
+        "medicines": medicines,
+        "title": "Inventory List",
+    }
+    return render(request, "clinic/inventory_list.html", context)
 
 
 ########################### Special Views: import csv dataset to medicine models ################################

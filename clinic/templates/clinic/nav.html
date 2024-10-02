@@ -23,7 +23,7 @@
                         <li><a class="dropdown-item" href="{% url 'accounts:register_user' %}">Register User</a></li>
                         {% endif %}
                         <li><a class="dropdown-item" href="{% url 'accounts:user_profile' user.pk %}">Profile</a></li>
-                        <li><a class="dropdown-item" href="#">Inventory</a></li>
+                        <li><a class="dropdown-item" href="{% url 'clinic:inventory_list' %}">Inventory</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
