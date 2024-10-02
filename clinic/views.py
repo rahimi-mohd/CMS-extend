@@ -195,10 +195,15 @@ def add_medical_record(request, pk):
             try:
                 # Save each medicine record and update stock
                 with transaction.atomic():
+                    record.save()
+                    record.medicine.set(medicines)  # save medicines into record
+
+                    """update the stock quantity of each medicine selected for this record"""
                     for med in medicines:
                         med.quantity_in_stock -= 1
                         med.save()
-                    record.save()
+
+                    """update checkin instance"""
                     checkin.medical_record = record
                     checkin.status = 2
                     checkin.save()
