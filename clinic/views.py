@@ -19,9 +19,7 @@ from datetime import date
 ########################### home page ################################
 @login_required
 def home(request):
-    # current_user = request.user
     context = {
-        # "user": current_user.username,
         "title": "Home",
     }
     return render(request, "clinic/index.html", context)
@@ -84,72 +82,11 @@ def register_patient(request):
 
 
 ########################### medical records handling ################################
-# @login_required
-# def add_medical_record(request, pk):
-#     today = date.today()
-#     checkin = Checkin.objects.get(patient_id=pk, status=1, date=today)
-
-#     """check if the one updating this feature is doctor type user"""
-#     if request.user.profile.user_type != Profile.UserType.DOCTOR:
-#         messages.error(request, "You do not have permission to add medical records.")
-#         return redirect("clinic:checkin_list")
-
-#     """check if medical record already updated,
-#     to make sure that there's no duplicate medical record in one checkin"""
-#     if checkin.medical_record:
-#         messages.error(
-#             request, "A medical record has already been added for this check-in."
-#         )
-#         return redirect("clinic:checkin_list")
-
-#     if request.method == "POST":
-#         form = MedicalRecordUpdateForm(request.POST)
-#         if form.is_valid():
-
-#             """handle medicine"""
-#             medicines = form.cleaned_data.get("medicines")
-#             for med in medicines:
-#                 """if medicine not enough stock, return error"""
-#                 if med.quantity_in_stock <= 0:
-#                     messages.error(request, f"Not enough {med.name} Stock!")
-#                     return redirect(
-#                         "clinic:add_medical_record", checkin.medical_record.id
-#                     )
-
-#             record_title = form.cleaned_data.get("title")
-#             record = form.save(commit=False)
-#             record.patient = checkin.patient
-#             record.doctor = request.user.profile
-#             try:
-#                 """save each medicine record"""
-#                 for med in medicines:
-#                     med.quantity_in_stock -=1
-#                     med.save()
-#                 """save record"""
-#                 record.save()
-#                 """handle checkin"""
-#                 checkin.medical_record = record
-#                 checkin.status = 2
-#                 checkin.save()
-#                 messages.success(request, f"{record_title} added.")
-#             except ValueError as e:
-#                 messages.error(request, str(e))
-#             return redirect("clinic:checkin_list")
-#     else:
-#         form = MedicalRecordUpdateForm()
-
-#     context = {
-#         "form": form,
-#         "checkin": checkin,
-#         "title": "Medical Record",
-#     }
-
-#     return render(request, "clinic/add_medical_record.html", context)
-
-
 @login_required
 def add_medical_record(request, pk):
     today = date.today()
+
+    """get checkin by patient id, status:waiting and date: today"""
     checkin = Checkin.objects.get(patient_id=pk, status=1, date=today)
 
     """check if the one updating this feature is doctor type user"""
@@ -234,12 +171,14 @@ def add_medical_record(request, pk):
 @login_required
 def appointment_list(request):
     today = date.today()
+
     """appointment list excluding today appointment"""
     appointment_list = Appointment.objects.all().exclude(date=today).order_by("-date")
+
     """today appointment only"""
     today_appointment = Appointment.objects.filter(date=today)
+
     context = {
-        "today": today,
         "today_appointment": today_appointment,
         "appointment_list": appointment_list,
         "title": "List Of Appointment",
@@ -330,8 +269,7 @@ def checkin_list(request):
     today_checkin = Checkin.objects.filter(date=today)
     context = {
         "checkin_list": today_checkin,
-        "today": today,
-        "title": "Check In List",
+        "title": "Check-In List",
     }
     return render(request, "clinic/checkin_list.html", context)
 
@@ -343,6 +281,7 @@ def add_checkin(request, pk):
     today_checkin = Checkin.objects.filter(
         patient=patient, date=today, status=1
     ).first()
+
     if today_checkin:
         messages.error(
             request, f"{patient.first_name} already checked in, in waiting list."
@@ -417,27 +356,6 @@ def inventory_list(request):
 
 
 ########################### Special Views: import csv dataset to medicine models ################################
-# import csv
-# from django.http import HttpResponse
-
-
-# def update_medicine_from_csv(request):
-#     if request.method == "POST":
-#         with open("medicine_dataset.csv", newline="") as f:
-#             reader = csv.DictReader(f)
-
-#             for row in reader:
-#                 strength_int = row["Strength"].replace("mg", "")
-#                 Medicine.objects.create(
-#                     name=row["Name"],
-#                     category=row["Category"],
-#                     dosage_form=row["Dosage Form"],
-#                     indication=row["Indication"],
-#                     strength=int(strength_int),
-#                 )
-
-#         return HttpResponse("CSV imported")
-
 import csv
 import os
 from django.conf import settings
