@@ -49,6 +49,7 @@ urlpatterns = [
         views.customer_payment,
         name="payment",
     ),
+    ############## Inventory handling ##############
     ############## Special url: import csv dataset to medicine models ##############
     path("add_csv/", views.update_medicine_from_csv, name="add_csv"),
 ]

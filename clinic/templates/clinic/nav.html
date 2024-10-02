@@ -21,12 +21,9 @@
                         {% if user.is_staff %}
                         <li><a class="dropdown-item" href="{% url 'accounts:user_list' %}">User List</a></li>
                         <li><a class="dropdown-item" href="{% url 'accounts:register_user' %}">Register User</a></li>
-                        <form action="{% url 'clinic:add_csv' %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit">Add CSV</button>
-                        </form>
                         {% endif %}
                         <li><a class="dropdown-item" href="{% url 'accounts:user_profile' user.pk %}">Profile</a></li>
+                        <li><a class="dropdown-item" href="#">Inventory</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
