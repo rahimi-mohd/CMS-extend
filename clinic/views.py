@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.db.models import Q
 
-from .models import Patient, MedicalRecord, Appointment, Checkin, Payment
+from .models import Patient, MedicalRecord, Appointment, Checkin, Payment, Medicine
 from accounts.models import Profile
 from .forms import (
     PatientRegistrationForm,
@@ -299,3 +299,66 @@ def customer_payment(request, checkin_pk):
         "record": record,
     }
     return render(request, "clinic/payment.html", context)
+
+
+########################### Special Views: import csv dataset to medicine models ################################
+# import csv
+# from django.http import HttpResponse
+
+
+# def update_medicine_from_csv(request):
+#     if request.method == "POST":
+#         with open("medicine_dataset.csv", newline="") as f:
+#             reader = csv.DictReader(f)
+
+#             for row in reader:
+#                 strength_int = row["Strength"].replace("mg", "")
+#                 Medicine.objects.create(
+#                     name=row["Name"],
+#                     category=row["Category"],
+#                     dosage_form=row["Dosage Form"],
+#                     indication=row["Indication"],
+#                     strength=int(strength_int),
+#                 )
+
+#         return HttpResponse("CSV imported")
+
+import csv
+import os
+from django.conf import settings
+from django.http import HttpResponse
+from clinic.models import Medicine  # Adjust this import as necessary
+
+
+def update_medicine_from_csv(request):
+    if request.method == "POST":
+        # Get the full path to the CSV file
+        file_path = os.path.join(
+            settings.BASE_DIR, "clinic", "medicine_dataset.csv"
+        )  # Adjust this path if needed
+
+        try:
+            with open(file_path, newline="") as f:
+                reader = csv.DictReader(f)
+
+                for row in reader:
+                    # Strip spaces and 'mg' from the strength value
+                    strength_value = row["Strength"].replace("mg", "").strip()
+
+                    # Create new Medicine entry
+                    Medicine.objects.create(
+                        name=row["Name"],
+                        category=row["Category"],
+                        dosage_form=row["Dosage Form"],
+                        indication=row["Indication"],
+                        strength=int(strength_value),
+                    )
+
+            return HttpResponse("CSV imported successfully!")
+
+        except FileNotFoundError:
+            return HttpResponse("CSV file not found.", status=404)
+        except Exception as e:
+            return HttpResponse(f"Error: {str(e)}", status=500)
+
+    return HttpResponse("Invalid request method.", status=405)
