@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models.expressions import fields
 from django.forms import ModelForm
 
 from .models import Patient, MedicalRecord, Appointment, Checkin, Payment, Medicine
@@ -21,7 +22,6 @@ class PatientRegistrationForm(ModelForm):
 
 
 class MedicalRecordUpdateForm(ModelForm):
-
     medicines = forms.ModelMultipleChoiceField(
         queryset=Medicine.objects.all().exclude(quantity_in_stock__lte=0),
         widget=forms.CheckboxSelectMultiple(),
@@ -90,3 +90,7 @@ class PaymentForm(ModelForm):
     class Meta:
         model = Payment
         fields = ["payment_type"]
+
+
+class InventoryAddItemForm(forms.Form):
+    amount = forms.IntegerField(label="Enter amount")

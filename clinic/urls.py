@@ -51,6 +51,11 @@ urlpatterns = [
     ),
     ############## Inventory handling ##############
     path("inventory_list/", views.inventory_list, name="inventory_list"),
+    path(
+        "inventory_list/<int:pk>/add_stock/",
+        views.add_item_into_inventory,
+        name="add_stock",
+    ),
     ############## Special url: import csv dataset to medicine models ##############
     path("add_csv/", views.update_medicine_from_csv, name="add_csv"),
 ]

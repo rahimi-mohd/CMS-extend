@@ -17,7 +17,7 @@
     </div>
     <table class="table table-striped">
         <thead>
-            <tr>
+            <tr class="table-info">
                 <th>#</th>
                 <th>Name</th>
                 <th>Category</th>
@@ -25,6 +25,7 @@
                 <th>Indication</th>
                 <th>Strength (mg)</th>
                 <th>Quantity</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -37,6 +38,11 @@
                 <td>{{ med.indication}}</td>
                 <td>{{ med.strength }}</td>
                 <td>{{ med.quantity_in_stock }}</td>
+                <td>
+                      <a class="btn rounded-pill btn-primary btn-sm" href="{% url 'clinic:add_stock' med.pk %}" role="button">
+                        Add Stock
+                      </a>
+                </td>
             </tr>
             {% empty %}
             <tr>

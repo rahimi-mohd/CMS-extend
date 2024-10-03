@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError, transaction
 from django.db.models import Q
+from django.template import context
 
 from .models import Patient, MedicalRecord, Appointment, Checkin, Payment, Medicine
 from accounts.models import Profile
@@ -11,6 +12,7 @@ from .forms import (
     MedicalRecordUpdateForm,
     AddAppointmentForm,
     PaymentForm,
+    InventoryAddItemForm,
 )
 
 from datetime import date
@@ -365,6 +367,30 @@ def inventory_list(request):
     return render(request, "clinic/inventory_list.html", context)
 
 
+@login_required
+def add_item_into_inventory(request, pk):
+    medicine = get_object_or_404(Medicine, pk=pk)
+    if request.method == "POST":
+        form = InventoryAddItemForm(request.POST)
+        if form.is_valid():
+            amount = form.cleaned_data["amount"]
+            medicine.quantity_in_stock += amount
+            medicine.save()
+            messages.success(request, f"Quantity for {medicine.name} update.")
+            return redirect("clinic:inventory_list")
+    else:
+        form = InventoryAddItemForm()
+
+    context = {
+        "form": form,
+        "medicine": medicine,
+        "title": "Add Stock",
+    }
+
+    return render(request, "clinic/add_stock.html", context)
+
+
+# TODO: Delete me later!
 ########################### Special Views: import csv dataset to medicine models ################################
 import csv
 import os
