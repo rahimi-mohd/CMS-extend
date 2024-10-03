@@ -21,7 +21,7 @@
                         <li><a class="dropdown-item" href="{% url 'accounts:user_profile' user.pk %}">Profile</a></li>
                         <li><a class="dropdown-item" href="{% url 'clinic:inventory_list' %}">Inventory</a></li>
                         {% if user.is_staff %}
-                        <li><a class="dropdown-item" href="{% url 'accounts:user_list' %}">User List</a></li>
+                        <li><a class="dropdown-item" href="{% url 'accounts:user_list' %}">Staff List</a></li>
                         <li><a class="dropdown-item" href="{% url 'accounts:register_user' %}">Register User</a></li>
                         {% endif %}
                         <li>
