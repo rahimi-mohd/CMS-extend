@@ -68,7 +68,18 @@ def update_user_profile(request, pk):
         messages.error(request, "You have to be admin to access this page.")
         return redirect("accounts:user_list")
 
-    user_profile = Profile.objects.get(user_id=pk)
+    """check if user already have a profile or not
+    if not, create new profile for user
+    Scenario: createsuperuser command create only the base user, not the profile,
+    Register user without the profile also possible using the admin page."""
+    try:
+        user_profile = Profile.objects.get(user_id=pk)
+    except Profile.DoesNotExist:
+        user_profile = Profile.objects.create(user_id=pk)
+        messages.warning(
+            request,
+            "Profile did't exist for this user, a new profile has been created.",
+        )
 
     if request.method == "POST":
         user_form = EditUserForm(request.POST, instance=user_profile.user)

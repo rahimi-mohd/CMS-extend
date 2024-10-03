@@ -91,6 +91,14 @@ def add_medical_record(request, pk):
     """get checkin by patient id, status:waiting and date: today"""
     checkin = Checkin.objects.get(patient_id=pk, status=1, date=today)
 
+    """check if user has no profile, usually super user which create with command line"""
+    if not hasattr(request.user, "profile"):
+        messages.error(
+            request,
+            "You do not have a profile. If you're superuser, you can access this using admin page.",
+        )
+        return redirect("clinic:checkin_list")
+
     """check if the one updating this feature is doctor type user"""
     if request.user.profile.user_type != Profile.UserType.DOCTOR:
         messages.error(request, "You do not have permission to add medical records.")
