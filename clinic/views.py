@@ -342,11 +342,21 @@ def customer_payment(request, checkin_pk):
 
 ########################### Inventory handling ################################
 def inventory_list(request):
-    medicines = (
-        Medicine.objects.all()
-        .order_by("quantity_in_stock")
-        .exclude(quantity_in_stock__lte=0)
-    )
+    query = request.GET.get("search", "")
+    if query:
+        medicines = (
+            Medicine.objects.filter(
+                Q(name__icontains=query) | Q(category__icontains=query)
+            )
+            .order_by("quantity_in_stock")
+            .exclude(quantity_in_stock__lte=0)
+        )
+    else:
+        medicines = (
+            Medicine.objects.all()
+            .order_by("quantity_in_stock")
+            .exclude(quantity_in_stock__lte=0)
+        )
 
     context = {
         "medicines": medicines,
