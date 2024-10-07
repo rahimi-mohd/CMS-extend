@@ -23,9 +23,9 @@
             <tbody>
                 <tr>
                     <td>{{ checkin.date }}</td>
-                    <td>{{ checkin.patient.first_name|title}}</td>
+                    <td>{{ checkin.patient.first_name|title}} {{ checkin.patient.last_name|title}}</td>
                     <td>{{ record.doctor.user.username|title }}</td>
-                    <td>{{ checkin.status }}</td>
+                    <td>{{ checkin.get_status_display }}</td>
                     <td>{{ record.description }}</td>
                     <td>RM{{ record.price }}</td>
                 </tr>
