@@ -14,6 +14,8 @@ from .forms import (
     InventoryAddItemForm,
 )
 
+from accounts.decorators import allowed_users
+
 from datetime import date
 
 
@@ -63,13 +65,8 @@ def patient_data(request, pk):
 
 
 @login_required
+@allowed_users(message="You do not have permission to register new patient.", redirect_link="clinic:patient_list" ,allowed_groups=["Clinic Staff", "Admin"])
 def register_patient(request):
-    """Handle user permission, show error messgae if user don't have permission to register new patient."""
-    if not request.user.has_perm("clinic.can_register"):
-        messages.error(request, "You do not have permission to register patients.")
-        return redirect("clinic:patient_list")
-
-
     if request.method == "POST":
         form = PatientRegistrationForm(request.POST)
         if form.is_valid():
@@ -90,6 +87,7 @@ def register_patient(request):
 
 ########################### medical records handling ################################
 @login_required
+@allowed_users("You do not have permission to add medical record.", redirect_link="clinic:checkin_list", allowed_groups=["Doctor", "Admin"])
 def add_medical_record(request, pk):
     today = date.today()
 
@@ -102,16 +100,6 @@ def add_medical_record(request, pk):
             request,
             "You do not have a profile. If you're superuser, you can access this using admin page.",
         )
-        return redirect("clinic:checkin_list")
-
-    """check if the one updating this feature is doctor type user"""
-    # if request.user.profile.user_type != Profile.UserType.DOCTOR:
-    #     messages.error(request, "You do not have permission to add medical records.")
-    #     return redirect("clinic:checkin_list")
-
-    """permission for adding medical record"""
-    if not request.user.has_perm("clinic.add_medicalrecord"):
-        messages.error(request, "You do not have permission to add medical record.")
         return redirect("clinic:checkin_list")
 
     """check if medical record already updated,
@@ -210,6 +198,7 @@ def appointment_list(request):
 def add_appointment(request, pk):
     patient = get_object_or_404(Patient, pk=pk)
 
+    # FIXME: find a way to translate this into decorator, and how to passed redirect link with arguments
     """permission to add appointment"""
     if not request.user.has_perm("clinic.add_checkin"):
         messages.error(request, "You do not have permission to add new appointment.")
@@ -306,6 +295,7 @@ def add_checkin(request, pk):
     today = date.today()
 
     """Check for user permission"""
+    # FIXME: same add appointment 
     if not request.user.has_perm("clinic.add_checkin"):
         messages.error(request, "You do not have permission to add this patient into check-in list.")
         return redirect("clinic:patient_data", patient.pk)
@@ -328,6 +318,7 @@ def add_checkin(request, pk):
 
 ########################### payment handling ################################
 @login_required
+@allowed_users("You do not have permission to handle payment.", redirect_link="clinic:checkin_list", allowed_groups=["Clinic Staff", "Admin"])
 def customer_payment(request, checkin_pk):
     checkin = get_object_or_404(Checkin, pk=checkin_pk)
     record = checkin.medical_record
@@ -345,11 +336,6 @@ def customer_payment(request, checkin_pk):
         messages.error(
             request, f"Payment for {checkin.patient.first_name} has already been make."
         )
-        return redirect("clinic:checkin_list")
-
-    """check permission for payment"""
-    if not request.user.has_perm("clinic.add_payment"):
-        messages.error(request, "You do not have permission to handle payment.")
         return redirect("clinic:checkin_list")
 
     if request.method == "POST":
@@ -403,6 +389,7 @@ def inventory_list(request):
 
 
 @login_required
+@allowed_users("You do not have permission to change inventory data", redirect_link="clinic:inventory_list", allowed_groups=["Clinic Staff", "Admin"])
 def add_item_into_inventory(request, pk):
     medicine = get_object_or_404(Medicine, pk=pk)
     if request.method == "POST":
