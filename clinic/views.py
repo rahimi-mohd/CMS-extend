@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db import IntegrityError, transaction
 from django.db.models import Q
-from django.template import context
 
 from .models import Patient, MedicalRecord, Appointment, Checkin, Payment, Medicine
 from accounts.models import Profile
@@ -65,6 +64,12 @@ def patient_data(request, pk):
 
 @login_required
 def register_patient(request):
+    """Handle user permission, show error messgae if user don't have permission to register new patient."""
+    if not request.user.has_perm("clinic.can_register"):
+        messages.error(request, "You do not have permission to register patients.")
+        return redirect("clinic:patient_list")
+
+
     if request.method == "POST":
         form = PatientRegistrationForm(request.POST)
         if form.is_valid():
@@ -100,8 +105,13 @@ def add_medical_record(request, pk):
         return redirect("clinic:checkin_list")
 
     """check if the one updating this feature is doctor type user"""
-    if request.user.profile.user_type != Profile.UserType.DOCTOR:
-        messages.error(request, "You do not have permission to add medical records.")
+    # if request.user.profile.user_type != Profile.UserType.DOCTOR:
+    #     messages.error(request, "You do not have permission to add medical records.")
+    #     return redirect("clinic:checkin_list")
+
+    """permission for adding medical record"""
+    if not request.user.has_perm("clinic.add_medicalrecord"):
+        messages.error(request, "You do not have permission to add medical record.")
         return redirect("clinic:checkin_list")
 
     """check if medical record already updated,
@@ -199,6 +209,12 @@ def appointment_list(request):
 @login_required
 def add_appointment(request, pk):
     patient = get_object_or_404(Patient, pk=pk)
+
+    """permission to add appointment"""
+    if not request.user.has_perm("clinic.add_checkin"):
+        messages.error(request, "You do not have permission to add new appointment.")
+        return redirect("clinic:patient_data", patient.pk)
+
     if request.method == "POST":
         form = AddAppointmentForm(request.POST)
         if form.is_valid():
@@ -288,6 +304,12 @@ def checkin_list(request):
 def add_checkin(request, pk):
     patient = get_object_or_404(Patient, pk=pk)
     today = date.today()
+
+    """Check for user permission"""
+    if not request.user.has_perm("clinic.add_checkin"):
+        messages.error(request, "You do not have permission to add this patient into check-in list.")
+        return redirect("clinic:patient_data", patient.pk)
+
     today_checkin = Checkin.objects.filter(
         patient=patient, date=today, status=1
     ).first()
@@ -323,6 +345,11 @@ def customer_payment(request, checkin_pk):
         messages.error(
             request, f"Payment for {checkin.patient.first_name} has already been make."
         )
+        return redirect("clinic:checkin_list")
+
+    """check permission for payment"""
+    if not request.user.has_perm("clinic.add_payment"):
+        messages.error(request, "You do not have permission to handle payment.")
         return redirect("clinic:checkin_list")
 
     if request.method == "POST":
