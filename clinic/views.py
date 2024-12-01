@@ -65,7 +65,11 @@ def patient_data(request, pk):
 
 
 @login_required
-@allowed_users(message="You do not have permission to register new patient.", redirect_link="clinic:patient_list" ,allowed_groups=["Clinic Staff", "Admin"])
+@allowed_users(
+    message="You do not have permission to register new patient.",
+    redirect_link="clinic:patient_list",
+    allowed_user_types=[Profile.UserType.ADMIN, Profile.UserType.CLINIC_STAFF],
+)
 def register_patient(request):
     if request.method == "POST":
         form = PatientRegistrationForm(request.POST)
@@ -87,7 +91,11 @@ def register_patient(request):
 
 ########################### medical records handling ################################
 @login_required
-@allowed_users("You do not have permission to add medical record.", redirect_link="clinic:checkin_list", allowed_groups=["Doctor", "Admin"])
+@allowed_users(
+    "You do not have permission to add medical record.",
+    redirect_link="clinic:checkin_list",
+    allowed_user_types=[Profile.UserType.DOCTOR, Profile.UserType.ADMIN],
+)
 def add_medical_record(request, pk):
     today = date.today()
 
@@ -295,9 +303,12 @@ def add_checkin(request, pk):
     today = date.today()
 
     """Check for user permission"""
-    # FIXME: same add appointment 
+    # FIXME: same add appointment
     if not request.user.has_perm("clinic.add_checkin"):
-        messages.error(request, "You do not have permission to add this patient into check-in list.")
+        messages.error(
+            request,
+            "You do not have permission to add this patient into check-in list.",
+        )
         return redirect("clinic:patient_data", patient.pk)
 
     today_checkin = Checkin.objects.filter(
@@ -318,7 +329,11 @@ def add_checkin(request, pk):
 
 ########################### payment handling ################################
 @login_required
-@allowed_users("You do not have permission to handle payment.", redirect_link="clinic:checkin_list", allowed_groups=["Clinic Staff", "Admin"])
+@allowed_users(
+    "You do not have permission to handle payment.",
+    redirect_link="clinic:checkin_list",
+    allowed_user_types=[Profile.UserType.CLINIC_STAFF, Profile.UserType.ADMIN],
+)
 def customer_payment(request, checkin_pk):
     checkin = get_object_or_404(Checkin, pk=checkin_pk)
     record = checkin.medical_record
@@ -389,7 +404,11 @@ def inventory_list(request):
 
 
 @login_required
-@allowed_users("You do not have permission to change inventory data", redirect_link="clinic:inventory_list", allowed_groups=["Clinic Staff", "Admin"])
+@allowed_users(
+    "You do not have permission to change inventory data",
+    redirect_link="clinic:inventory_list",
+    allowed_user_types=[Profile.UserType.CLINIC_STAFF, Profile.UserType.ADMIN],
+)
 def add_item_into_inventory(request, pk):
     medicine = get_object_or_404(Medicine, pk=pk)
     if request.method == "POST":
