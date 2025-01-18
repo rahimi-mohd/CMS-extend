@@ -3,6 +3,12 @@
 
 {% block main %}
 
+<!-- Dashboard section (will now include in index.html) -->
+<div class="container-fluid px-4">
+    {% include 'clinic/dashboard.html' %}
+</div>
+
+<!-- Main content area (menu) -->
 <div class="container-fluid px-4">
     <!-- welcome message -->
     <div class="container-flex px-5 pt-2">
@@ -53,7 +59,5 @@
         </div>
     </div>
 </div>
-
-
 
 {% endblock %}

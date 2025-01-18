@@ -3,27 +3,40 @@
 
 {% include "clinic/head.html" %}
 
-
 <body style="background-color: lightblue;">
 
     <!-- navigations -->
-    {% include "clinic/nav.html" %}
-
-    <!-- alert messages -->
-    <div class="container pt-3 mt-3">
-        {% if messages %}
-        {% for msg in messages %}
-        <div class="alert alert-{{ msg.tags }}">
-            {{ msg }}
-        </div>
-        {% endfor %}
-        {% endif %}
+    <div class="bg-dark text-light">
+        {% include "clinic/nav.html" %}
     </div>
 
-    <!-- main dashboard -->
-    <div class="container bg-light pb-5" style="border: 7px inset rgb(167, 164, 164);">
-        {% block main %}
-        {% endblock %}
+    <!-- main layout -->
+    <div class="d-flex" style="height: 100vh;">
+        <!-- vertical nav bar -->
+        <div class="left-bar bg-dark text-light p-3 d-none d-md-block" style="width: 80px; margin-right: 20px;">
+            {% include "clinic/left_bar.html" %}
+        </div>
+
+        <!-- main content -->
+        <div class="flex-grow-1">
+
+            <!-- alert messages -->
+            <div class="container pt-3 mt-3">
+                {% if messages %}
+                {% for msg in messages %}
+                <div class="alert alert-{{ msg.tags }}">
+                    {{ msg }}
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+
+            <!-- main dashboard -->
+            <div class="container bg-light pb-5" style="border: 7px inset rgb(167, 164, 164);">
+                {% block main %}
+                {% endblock %}
+            </div>
+        </div>
     </div>
 
     <!-- bootstrap script -->

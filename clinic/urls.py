@@ -6,6 +6,7 @@ app_name = "clinic"
 urlpatterns = [
     ############## home page ##############
     path("", views.home, name="home"),
+    path("dashboard/", views.dashboard, name="dashboard"), 
     ############## patient handling ##############
     path("patient_list/", views.patient_list, name="patient_list"),
     path(

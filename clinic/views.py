@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db import IntegrityError, transaction
 from django.db.models import Q
+from django.utils.timezone import localdate
 
 from .models import Patient, MedicalRecord, Appointment, Checkin, Payment, Medicine
 from accounts.models import Profile
@@ -26,6 +27,21 @@ def home(request):
         "title": "Home",
     }
     return render(request, "clinic/index.html", context)
+
+@login_required
+def dashboard(request):
+    today = localdate()
+
+    appointment_count = Appointment.objects.filter(date=today).count()
+    checkin_count = Checkin.objects.filter(date=today).count()
+
+    context = {
+        "appointment_count" : appointment_count,
+        "checkin_count": checkin_count,
+        "user": request.user,
+    }
+
+    return render(request, "clinic/dashboard.html", context)
 
 
 ########################### patient handling ################################
