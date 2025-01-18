@@ -5,20 +5,23 @@
 
 <body style="background-color: lightblue;">
 
-    <!-- navigations -->
-    <div class="bg-dark text-light">
+    <!-- Fixed Top Bar -->
+    <div class="bg-dark text-light" style="position: fixed; top: 0; left: 0; width: 100%; z-index: 1030;">
         {% include "clinic/nav.html" %}
     </div>
 
     <!-- main layout -->
-    <div class="d-flex" style="height: 100vh;">
-        <!-- vertical nav bar -->
-        <div class="left-bar bg-dark text-light p-3 d-none d-md-block" style="width: 80px; margin-right: 20px;">
+    <div class="d-flex" style="height: 100vh; margin-top: 56px;"> <!-- Added margin-top to account for fixed top bar -->
+
+        <!-- Fixed Left Sidebar -->
+        <div class="left-bar bg-dark text-light p-3 d-none d-md-block"
+            style="position: fixed; top: 56px; left: 0; height: calc(100vh - 56px); width: 80px; margin-right: 20px; z-index: 1020;">
             {% include "clinic/left_bar.html" %}
         </div>
 
-        <!-- main content -->
-        <div class="flex-grow-1">
+        <!-- Main Content Area -->
+        <div class="flex-grow-1" style="margin-left: 80px;">
+            <!-- Added margin-left to account for fixed left sidebar -->
 
             <!-- alert messages -->
             <div class="container pt-3 mt-3">
@@ -39,7 +42,7 @@
         </div>
     </div>
 
-    <!-- bootstrap script -->
+    <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
         crossorigin="anonymous"></script>
