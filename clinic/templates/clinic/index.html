@@ -14,48 +14,49 @@
 
 <!-- Main content area (menu) -->
 <div class="container-fluid px-4">
-    <!-- welcome message -->
-    <div class="container-flex px-5 pt-2">
-        <h3 class="main-header-title text-center">
-            {% if user.profile.get_user_type_display == "Doctor" %}
-            Welcome, Doctor <em>{{ user.username|title }}.</em>
-            {% elif user.profile.get_user_type_display == "Clinic Staff" %}
-            Welcome, Staff <em>{{ user.username|title }}.</em>
-            {% else %}
-            Welcome, Admin <em>{{ user.username|title }}</em>.
-            {% endif %}
-        </h3>
+
+    <!-- Clinic Management System Title -->
+    <div class="d-flex justify-content-center align-items-center mb-3 py-3" style="height: 100px;">
+        <h2 class="fw-bold text-center text-dark" style="font-size: 36px; letter-spacing: 2px;">
+            Clinic Management System
+        </h2>
     </div>
 
-    <div class="row gx-5">
-        <div class="d-flex justify-content-between align-items-center mb-3 py-3">
-            <h2 class="fw-bold">Clinic Management System</h2>
-        </div>
-
-        <div class="col-12 gy-3 d-flex justify-content-center"> <!-- Main content area -->
-
-            <div class="row gy-5 d-flex justify-content-center">
-                <!-- menu for patient list -->
-                <div class="col py-2 text-center">
-                    <img src="{% static 'clinic/health-report.png' %}" class="img-thumbnail rounded-circle" alt="">
-                    <hr>
-                    <a class="btn btn-primary btn-sm" href="{% url 'clinic:patient_list' %}">
+    <!-- Menu Cards -->
+    <div class="row gy-5 d-flex justify-content-center">
+        <!-- Menu for Patient List -->
+        <div class="col-md-4 py-2 text-center">
+            <div class="card shadow-sm" style="cursor: pointer;">
+                <img src="{% static 'clinic/health-report.png' %}" class="card-img-top rounded-circle mx-auto d-block"
+                    alt="" style="width: 80px; height: 80px;">
+                <div class="card-body">
+                    <a class="btn btn-primary btn-sm w-100" href="{% url 'clinic:patient_list' %}">
                         Patient List
                     </a>
                 </div>
-                <!-- menu for appointment list -->
-                <div class="col py-2 text-center">
-                    <img src="{% static 'clinic/appointment.png' %}" class="img-thumbnail rounded-circle" alt="">
-                    <hr>
-                    <a class="btn btn-primary btn-sm" href="{% url 'clinic:appointment_list' %}">
+            </div>
+        </div>
+
+        <!-- Menu for Appointment List -->
+        <div class="col-md-4 py-2 text-center">
+            <div class="card shadow-sm" style="cursor: pointer;">
+                <img src="{% static 'clinic/appointment.png' %}" class="card-img-top rounded-circle mx-auto d-block"
+                    alt="" style="width: 80px; height: 80px;">
+                <div class="card-body">
+                    <a class="btn btn-primary btn-sm w-100" href="{% url 'clinic:appointment_list' %}">
                         Appointment List
                     </a>
                 </div>
-                <!-- menu for checkin list -->
-                <div class="col py-2 text-center">
-                    <img src="{% static 'clinic/doctor-visit.png' %}" class="img-thumbnail rounded-circle" alt="">
-                    <hr>
-                    <a class="btn btn-primary btn-sm" href="{% url 'clinic:checkin_list' %}">
+            </div>
+        </div>
+
+        <!-- Menu for Check-In List -->
+        <div class="col-md-4 py-2 text-center">
+            <div class="card shadow-sm" style="cursor: pointer;">
+                <img src="{% static 'clinic/doctor-visit.png' %}" class="card-img-top rounded-circle mx-auto d-block"
+                    alt="" style="width: 80px; height: 80px;">
+                <div class="card-body">
+                    <a class="btn btn-primary btn-sm w-100" href="{% url 'clinic:checkin_list' %}">
                         Check-In List
                     </a>
                 </div>

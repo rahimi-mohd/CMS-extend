@@ -1,0 +1,2 @@
+fix permission, use the decorator instead of manual 
+fix dashboard to query correct data

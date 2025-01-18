@@ -3,7 +3,6 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db import IntegrityError, transaction
 from django.db.models import Q
-from django.utils.timezone import localdate
 
 from .models import Patient, MedicalRecord, Appointment, Checkin, Payment, Medicine
 from accounts.models import Profile
@@ -23,26 +22,18 @@ from datetime import date
 ########################### home page ################################
 @login_required
 def home(request):
-    context = {
-        "title": "Home",
-    }
-    return render(request, "clinic/index.html", context)
-
-@login_required
-def dashboard(request):
-    today = localdate()
+    today = date.today()
 
     appointment_count = Appointment.objects.filter(date=today).count()
     checkin_count = Checkin.objects.filter(date=today).count()
 
     context = {
+        "title": "Home",
         "appointment_count" : appointment_count,
         "checkin_count": checkin_count,
         "user": request.user,
     }
-
-    return render(request, "clinic/dashboard.html", context)
-
+    return render(request, "clinic/index.html", context)
 
 ########################### patient handling ################################
 @login_required
@@ -314,18 +305,24 @@ def checkin_list(request):
 
 
 @login_required
+# change redirect later
+@allowed_users(
+    "You do not have permission to add this patient into check-in list.",
+    redirect_link="clinic:checkin_list",
+    allowed_user_types=[Profile.UserType.CLINIC_STAFF, Profile.UserType.ADMIN],
+)
 def add_checkin(request, pk):
     patient = get_object_or_404(Patient, pk=pk)
     today = date.today()
 
     """Check for user permission"""
-    # FIXME: same add appointment
-    if not request.user.has_perm("clinic.add_checkin"):
-        messages.error(
-            request,
-            "You do not have permission to add this patient into check-in list.",
-        )
-        return redirect("clinic:patient_data", patient.pk)
+    # # FIXME: same add appointment
+    # if not request.user.has_perm("clinic.add_checkin"):
+    #     messages.error(
+    #         request,
+    #         "You do not have permission to add this patient into check-in list.",
+    #     )
+    #     return redirect("clinic:patient_data", patient.pk)
 
     today_checkin = Checkin.objects.filter(
         patient=patient, date=today, status=1
