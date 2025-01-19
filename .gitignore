@@ -2,3 +2,10 @@ venv
 *__pycache__
 db.sqlite3
 .pytest_cache
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
