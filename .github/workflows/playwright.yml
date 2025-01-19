@@ -1,16 +1,20 @@
 name: Playwright Tests
+
 on:
   push:
-    branches: [ main, master ]
+    branches: [ staging ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ staging ]
 
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
+    # Checkout the repository
     - uses: actions/checkout@v4
+
+    # Setup Node.js environment
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
@@ -23,28 +27,15 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     
-    # Setup Django and Add Test Users
-    - name: Setup Django and Add Test Users
+    # Setup Django and load database
+    - name: Setup Django and Load Database
       run: |
         python -m venv venv
         source venv/bin/activate
         pip install -r requirements.txt
         python manage.py migrate
         
-        # Create admin user
-        echo "
-        from django.contrib.auth.models import User
-        from clinic.models import Profile
-        
-        # Create admin user
-        admin_user = User.objects.create_superuser(username='admin', email='admin@example.com', password='password123')
-        Profile.objects.create(user=admin_user, user_type=Profile.UserType.ADMIN)
-        
-        # Create clinic staff user
-        staff_user = User.objects.create_user(username='clinic_staff', email='staff@example.com', password='bingo123#@!')
-        Profile.objects.create(user=staff_user, user_type=Profile.UserType.CLINIC_STAFF)
-        " | python manage.py shell
-        
+        # Run the server in the background
         nohup python manage.py runserver 0.0.0.0:8000 &
 
     # Run Playwright tests
