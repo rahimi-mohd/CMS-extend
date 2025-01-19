@@ -21,6 +21,7 @@ from datetime import date
 
 ########################### home page ################################
 @login_required
+# everyone can see this page
 def home(request):
     today = date.today()
 
@@ -37,6 +38,7 @@ def home(request):
 
 ########################### patient handling ################################
 @login_required
+# everyone can see this page
 def patient_list(request):
     query = request.GET.get("search", "")
     if query:
@@ -56,6 +58,7 @@ def patient_list(request):
 
 
 @login_required
+# everyone can see this page
 def patient_data(request, pk):
     patient = get_object_or_404(Patient, pk=pk)
     medical_records = MedicalRecord.objects.filter(patient=patient).order_by(
@@ -72,6 +75,7 @@ def patient_data(request, pk):
 
 
 @login_required
+# only clinic staff and admin can see this page
 @allowed_users(
     message="You do not have permission to register new patient.",
     redirect_link="clinic:patient_list",
@@ -98,6 +102,7 @@ def register_patient(request):
 
 ########################### medical records handling ################################
 @login_required
+# only doctors and admin can see this page
 @allowed_users(
     "You do not have permission to add medical record.",
     redirect_link="clinic:checkin_list",
@@ -192,6 +197,7 @@ def add_medical_record(request, pk):
 
 ########################### appointment handling ################################
 @login_required
+# everyone can see this page
 def appointment_list(request):
     today = date.today()
 
@@ -210,14 +216,15 @@ def appointment_list(request):
 
 
 @login_required
+# only clinic staff and admin can see this page
+@allowed_users(
+    "You do not have permission to add new appointment.",
+    redirect_link="clinic:patient_list",
+    allowed_user_types=[Profile.UserType.CLINIC_STAFF, Profile.UserType.ADMIN],
+)
 def add_appointment(request, pk):
     patient = get_object_or_404(Patient, pk=pk)
 
-    # FIXME: find a way to translate this into decorator, and how to passed redirect link with arguments
-    """permission to add appointment"""
-    if not request.user.has_perm("clinic.add_checkin"):
-        messages.error(request, "You do not have permission to add new appointment.")
-        return redirect("clinic:patient_data", patient.pk)
 
     if request.method == "POST":
         form = AddAppointmentForm(request.POST)
@@ -244,6 +251,12 @@ def add_appointment(request, pk):
 
 
 @login_required
+# only clinic staff and admin can see this page
+@allowed_users(
+    "You do not have permission to move patient into check-in list.",
+    redirect_link="clinic:checkin_list",
+    allowed_user_types=[Profile.UserType.CLINIC_STAFF, Profile.UserType.ADMIN],
+)
 def move_to_checkin(request, pk):
     """Handle moving patients to check-in from the appointment list."""
     today = date.today()
@@ -294,6 +307,7 @@ def move_to_checkin(request, pk):
 
 ########################### checkin handling ################################
 @login_required
+# everyone can see this page
 def checkin_list(request):
     today = date.today()
     today_checkin = Checkin.objects.filter(date=today)
@@ -392,6 +406,8 @@ def customer_payment(request, checkin_pk):
 
 
 ########################### Inventory handling ################################
+@login_required
+# everyone can see this page
 def inventory_list(request):
     query = request.GET.get("search", "")
     if query:
