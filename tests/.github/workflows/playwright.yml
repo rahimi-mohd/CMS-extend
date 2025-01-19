@@ -17,6 +17,26 @@ jobs:
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
+    - name: Setup Django and Add Test Users
+      run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+          python manage.py migrate
+          echo "
+          from django.contrib.auth.models import User
+          from clinic.models import Profile
+
+          # Create admin user
+          admin_user = User.objects.create_superuser(username='admin_user', email='admin@example.com', password='password123')
+          Profile.objects.create(user=admin_user, user_type=Profile.UserType.ADMIN)
+
+          # Create clinic staff user
+          staff_user = User.objects.create_user(username='clinic_staff', email='staff@example.com', password='password123')
+          Profile.objects.create(user=staff_user, user_type=Profile.UserType.CLINIC_STAFF)
+          " | python manage.py shell
+                    nohup python manage.py runserver 0.0.0.0:8000 &
+
     - name: Run Playwright tests
       run: npx playwright test
     - uses: actions/upload-artifact@v4
