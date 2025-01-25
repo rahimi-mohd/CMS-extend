@@ -64,13 +64,13 @@ Figure 2: Dashboard.
 ![patient list](images/patient_list.png "Figure 3: Patient List")  
 Figure 3: Patient List.  
 
-![patient profile](images/patient_profile.png "Figure 4: Patient Profile.")  
+![patient profile](images/profile.png "Figure 4: Patient Profile.")  
 Figure 4: Patient Profile.  
 
 ![check-in list](images/checkin_list.png "Figure 5: Check-in List.")  
 Figure 5: Check-in List.  
 
-![medical record](images/med_record.png "Figure 6: Add Medical Record.")  
+![medical record](images/medical_record.png "Figure 6: Add Medical Record.")  
 Figure 6: Add Medical Record.  
 
 ![payment](images/payment.png "Figure 7: Payment.")  
@@ -79,12 +79,16 @@ Figure 7: Payment.
 
 ## Functional Test
 
-Functional test instructions have been moved to `./tests/README.md`.
+Functional test instructions have been moved to `./tests/README.md`.  
+
+UPDATED (Jan 2025): I've moved on from using Playwright with Python to Playwright with Typescript. This is because I want to learn typescript and why not learn it while doing an automation project with Playwright ?  
+
+All the code in tests/ will be in typescript.
 
 ## Next Plan
 
 1. To add Unit Test.
 2. To add test case with functional test using Playwright.
 3. Refactor views.
-4. Add permission using admin page.
+4. Add permission using admin page. (DONE)
 
