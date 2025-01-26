@@ -1,22 +1,19 @@
 // all test data goes here
 
-export const users = [
-  // admin
-  {
+export const users = {
+  admin: {
     username: "admin",
     password: "12",
   },
-  // clinic staff
-  {
+  staff: {
     username: "sya",
     password: "bingo123#@!",
   },
-  // doctor
-  {
+  doctor: {
     username: "aira_aman",
     password: "bingo123#@!",
   }
-]
+};
 
 // fake user
 export const fakeUser = {
