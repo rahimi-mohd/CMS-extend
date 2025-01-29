@@ -3,10 +3,9 @@ import { users, fakeUser } from "../data/users";
 
 test.describe("Test login and navigate to dashboard", () => {
 
-  for (const [role, { username, password }] of Object.entries(users)) {
-    test(`(Positive Scenario) Login as ${role} and go to dashboard`, async ({ loginPage, dashboardPage }) => {
-      await loginPage.navigateToAndVisible();
-      await loginPage.startLogin(username, password);
+  for (const role of Object.keys(users)) {
+    test(`(Positive Scenario) Login as ${role} and go to dashboard`, async ({ loginAs, dashboardPage }) => {
+      await loginAs(role as keyof typeof users);
       await dashboardPage.navigateToAndVisible();
     });
   };

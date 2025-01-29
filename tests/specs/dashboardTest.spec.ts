@@ -3,20 +3,19 @@ import { users } from "../data/users";
 
 test.describe("Test user can see their username on the screen", () => {
 
-    for (const [role, { username, password }] of Object.entries(users)) {
-        test(`Verified that ${username} can see their username on dashboard`, async ({ loginPage, dashboardPage, page }) => {
-            await loginPage.navigateToAndVisible();
-            await loginPage.startLogin(username, password);
+    for (const role of Object.keys(users)) {
+        test(`Verified that ${role} can see their username on dashboard`, async ({ loginAs, dashboardPage, page }) => {
+            const user = users[role as keyof typeof users];
+            await loginAs(role as keyof typeof users);
             await dashboardPage.navigateToAndVisible();
-            await expect(page.getByText(`Hello, ${username} Good to see you!`)).toBeVisible();
+            await expect(page.getByText(`Hello, ${user.username} Good to see you!`)).toBeVisible();
         });
     };
 })
 
 test.describe("Test main menu items can be click", () => {
-    test.beforeEach(async ({ loginPage }) => {
-        loginPage.navigateToAndVisible();
-        loginPage.startLogin(users.admin.username, users.admin.password);
+    test.beforeEach(async ({ loginAs }) => {
+        await loginAs("admin");
     })
 
     test("can click Patient List", async ({ dashboardPage, page }) => {
