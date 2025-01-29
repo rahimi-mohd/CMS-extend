@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db import IntegrityError, transaction
+from django.core.paginator import Paginator
 from django.db.models import Q
 
 from .models import Patient, MedicalRecord, Appointment, Checkin, Payment, Medicine
@@ -406,30 +407,58 @@ def customer_payment(request, checkin_pk):
 
 
 ########################### Inventory handling ################################
+# @login_required
+# # everyone can see this page
+# def inventory_list(request):
+    # query = request.GET.get("search", "")
+    # page_number = request.GET.get("page", 1)
+    # if query:
+    #     medicines = (
+    #         Medicine.objects.filter(
+    #             Q(name__icontains=query) | Q(category__icontains=query)
+    #         )
+    #         .order_by("quantity_in_stock")
+    #         .exclude(quantity_in_stock__lte=0)
+    #     )
+    # else:
+    #     medicines = (
+    #         Medicine.objects.all()
+    #         .order_by("quantity_in_stock")
+    #         .exclude(quantity_in_stock__lte=0)
+    #     )
+    
+    # medicine_list = Medicine.objects.all()
+
+    # context = {
+    #     "medicines": medicines,
+    #     "medicine_list": medicine_list,
+    #     "title": "Inventory List",
+    # }
+    # return render(request, "clinic/inventory_list.html", context)
+
 @login_required
-# everyone can see this page
 def inventory_list(request):
     query = request.GET.get("search", "")
+
+    # Filter based on search query if provided
     if query:
-        medicines = (
-            Medicine.objects.filter(
-                Q(name__icontains=query) | Q(category__icontains=query)
-            )
-            .order_by("quantity_in_stock")
-            .exclude(quantity_in_stock__lte=0)
-        )
+        medicines = Medicine.objects.filter(
+            Q(name__icontains=query) | Q(category__icontains=query)
+        ).order_by("-quantity_in_stock", "name")  # Descending order for quantity
     else:
-        medicines = (
-            Medicine.objects.all()
-            .order_by("quantity_in_stock")
-            .exclude(quantity_in_stock__lte=0)
-        )
+        medicines = Medicine.objects.order_by("-quantity_in_stock", "name")  # Descending order for quantity
+
+    # Pagination: Show 50 medicines per page
+    paginator = Paginator(medicines, 50)
+    page_number = request.GET.get("page")
+    medicines_page = paginator.get_page(page_number)
 
     context = {
-        "medicines": medicines,
+        "medicines": medicines_page,
         "title": "Inventory List",
     }
     return render(request, "clinic/inventory_list.html", context)
+
 
 
 @login_required
