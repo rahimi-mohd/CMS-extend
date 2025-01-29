@@ -46,6 +46,14 @@ Setup database
 `$ ./manage createsuperuser`  
 You will be prompt with username, email, and password. And you have to use this account for first log in.  
 
+To populate patient and medicine data
+```
+./manage.py populate_data --patients # this will generate fake patients data using Faker module  
+./manage.py populate_data --medicines # this will import medicines dataset from clinic/data/medicine_dataset.csv
+```
+
+**NOTE**: medicine dataset have 5000 of medicine dataset, but it will default to 0 quantity of stock, user still need to update the number of stock inside inventory management.
+
 Run server  
 `$ ./manage runserver`
 
