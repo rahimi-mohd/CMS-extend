@@ -21,8 +21,9 @@ from datetime import date
 
 
 ########################### home page ################################
+
+
 @login_required
-# everyone can see this page
 def home(request):
     today = date.today()
 
@@ -31,15 +32,17 @@ def home(request):
 
     context = {
         "title": "Home",
-        "appointment_count" : appointment_count,
+        "appointment_count": appointment_count,
         "checkin_count": checkin_count,
         "user": request.user,
     }
     return render(request, "clinic/index.html", context)
 
+
 ########################### patient handling ################################
+
+
 @login_required
-# everyone can see this page
 def patient_list(request):
     query = request.GET.get("search", "")
     if query:
@@ -59,7 +62,6 @@ def patient_list(request):
 
 
 @login_required
-# everyone can see this page
 def patient_data(request, pk):
     patient = get_object_or_404(Patient, pk=pk)
     medical_records = MedicalRecord.objects.filter(patient=patient).order_by(
@@ -75,8 +77,10 @@ def patient_data(request, pk):
     return render(request, "clinic/patient_details.html", context)
 
 
+"""This function can be accessed only by staff and admin"""
+
+
 @login_required
-# only clinic staff and admin can see this page
 @allowed_users(
     message="You do not have permission to register new patient.",
     redirect_link="clinic:patient_list",
@@ -103,7 +107,6 @@ def register_patient(request):
 
 ########################### medical records handling ################################
 @login_required
-# only doctors and admin can see this page
 @allowed_users(
     "You do not have permission to add medical record.",
     redirect_link="clinic:checkin_list",
@@ -146,7 +149,6 @@ def add_medical_record(request, pk):
                     stock_error = True
 
             if stock_error:
-                # Render the form with the error message instead of redirecting
                 return render(
                     request,
                     "clinic/add_medical_record.html",
@@ -184,7 +186,6 @@ def add_medical_record(request, pk):
                     {"form": form, "checkin": checkin, "title": "Medical Record"},
                 )
     else:
-        # If the request method is GET, you can initialize the form with existing data if needed.
         form = MedicalRecordUpdateForm()
 
     context = {
@@ -198,7 +199,6 @@ def add_medical_record(request, pk):
 
 ########################### appointment handling ################################
 @login_required
-# everyone can see this page
 def appointment_list(request):
     today = date.today()
 
@@ -217,7 +217,6 @@ def appointment_list(request):
 
 
 @login_required
-# only clinic staff and admin can see this page
 @allowed_users(
     "You do not have permission to add new appointment.",
     redirect_link="clinic:patient_list",
@@ -225,7 +224,6 @@ def appointment_list(request):
 )
 def add_appointment(request, pk):
     patient = get_object_or_404(Patient, pk=pk)
-
 
     if request.method == "POST":
         form = AddAppointmentForm(request.POST)
@@ -252,7 +250,6 @@ def add_appointment(request, pk):
 
 
 @login_required
-# only clinic staff and admin can see this page
 @allowed_users(
     "You do not have permission to move patient into check-in list.",
     redirect_link="clinic:checkin_list",
@@ -307,8 +304,9 @@ def move_to_checkin(request, pk):
 
 
 ########################### checkin handling ################################
+
+
 @login_required
-# everyone can see this page
 def checkin_list(request):
     today = date.today()
     today_checkin = Checkin.objects.filter(date=today)
@@ -320,7 +318,6 @@ def checkin_list(request):
 
 
 @login_required
-# change redirect later
 @allowed_users(
     "You do not have permission to add this patient into check-in list.",
     redirect_link="clinic:checkin_list",
@@ -329,15 +326,6 @@ def checkin_list(request):
 def add_checkin(request, pk):
     patient = get_object_or_404(Patient, pk=pk)
     today = date.today()
-
-    """Check for user permission"""
-    # # FIXME: same add appointment
-    # if not request.user.has_perm("clinic.add_checkin"):
-    #     messages.error(
-    #         request,
-    #         "You do not have permission to add this patient into check-in list.",
-    #     )
-    #     return redirect("clinic:patient_data", patient.pk)
 
     today_checkin = Checkin.objects.filter(
         patient=patient, date=today, status=1
@@ -356,6 +344,8 @@ def add_checkin(request, pk):
 
 
 ########################### payment handling ################################
+
+
 @login_required
 @allowed_users(
     "You do not have permission to handle payment.",
@@ -407,35 +397,6 @@ def customer_payment(request, checkin_pk):
 
 
 ########################### Inventory handling ################################
-# @login_required
-# # everyone can see this page
-# def inventory_list(request):
-    # query = request.GET.get("search", "")
-    # page_number = request.GET.get("page", 1)
-    # if query:
-    #     medicines = (
-    #         Medicine.objects.filter(
-    #             Q(name__icontains=query) | Q(category__icontains=query)
-    #         )
-    #         .order_by("quantity_in_stock")
-    #         .exclude(quantity_in_stock__lte=0)
-    #     )
-    # else:
-    #     medicines = (
-    #         Medicine.objects.all()
-    #         .order_by("quantity_in_stock")
-    #         .exclude(quantity_in_stock__lte=0)
-    #     )
-    
-    # medicine_list = Medicine.objects.all()
-
-    # context = {
-    #     "medicines": medicines,
-    #     "medicine_list": medicine_list,
-    #     "title": "Inventory List",
-    # }
-    # return render(request, "clinic/inventory_list.html", context)
-
 @login_required
 def inventory_list(request):
     query = request.GET.get("search", "")
@@ -444,9 +405,13 @@ def inventory_list(request):
     if query:
         medicines = Medicine.objects.filter(
             Q(name__icontains=query) | Q(category__icontains=query)
-        ).order_by("-quantity_in_stock", "name")  # Descending order for quantity
+        ).order_by(
+            "-quantity_in_stock", "name"
+        )  # Descending order for quantity
     else:
-        medicines = Medicine.objects.order_by("-quantity_in_stock", "name")  # Descending order for quantity
+        medicines = Medicine.objects.order_by(
+            "-quantity_in_stock", "name"
+        )  # Descending order for quantity
 
     # Pagination: Show 50 medicines per page
     paginator = Paginator(medicines, 50)
@@ -458,7 +423,6 @@ def inventory_list(request):
         "title": "Inventory List",
     }
     return render(request, "clinic/inventory_list.html", context)
-
 
 
 @login_required

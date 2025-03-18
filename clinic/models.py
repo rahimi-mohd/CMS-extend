@@ -17,7 +17,6 @@ class Patient(models.Model):
     class Meta:
         permissions = [
             ("can_register", "Can register new patient"),
-
         ]
 
     title = models.IntegerField(choices=TITLE_CHOICES, default=1, blank=True, null=True)
