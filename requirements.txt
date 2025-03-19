@@ -1,4 +1,3 @@
 crispy-bootstrap5
 Django
 django-crispy-forms
-playwright
