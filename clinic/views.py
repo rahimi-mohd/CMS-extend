@@ -320,7 +320,7 @@ def checkin_table(request):
     context = {
         "checkin_list": today_checkin,
     }
-    return render(request, "clinic/partial/checkin_table.html", context)
+    return render(request, "clinic/partials/checkin_table.html", context)
 
 @login_required
 @allowed_users(
