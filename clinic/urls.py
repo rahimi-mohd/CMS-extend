@@ -33,6 +33,7 @@ urlpatterns = [
     path("appointment_list/", views.appointment_list, name="appointment_list"),
     ############## check in handling ##############
     path("checkin_list/", views.checkin_list, name="checkin_list"),
+    path("checkin_table", views.checkin_table, name="checkin_table"),
     path(
         "patient_list/<int:pk>/patient_checkin/",
         views.add_checkin,

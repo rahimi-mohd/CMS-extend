@@ -308,14 +308,19 @@ def move_to_checkin(request, pk):
 
 @login_required
 def checkin_list(request):
-    today = date.today()
-    today_checkin = Checkin.objects.filter(date=today)
     context = {
-        "checkin_list": today_checkin,
         "title": "Check-In List",
     }
     return render(request, "clinic/checkin_list.html", context)
 
+@login_required
+def checkin_table(request):
+    today = date.today()
+    today_checkin= Checkin.objects.filter(date=today)
+    context = {
+        "checkin_list": today_checkin,
+    }
+    return render(request, "clinic/partial/checkin_table.html", context)
 
 @login_required
 @allowed_users(

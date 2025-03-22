@@ -6,71 +6,11 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="fw-bold">Check In List</h2>
     </div>
-    <table class="table table-striped">
-        <thead>
-            <tr class="table-info">
-                <th>#</th>
-                <th>Full Name</th>
-                <th>Date</th>
-                <th>Handle</th>
-                <th>Status</th>
-                <th>Payment</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for checkin in checkin_list %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ checkin.patient.first_name|title }} {{ checkin.patient.last_name|title }}</td>
-                <td>{{ checkin.date }}</td>
-                <td>
-                    {% if checkin.medical_record %}
-                    <a href="{% url 'clinic:add_medical_record' checkin.patient.pk %}"
-                        class="btn btn-success rounded-pill btn-sm disabled">
-                        Medical Record Added
-                    </a>
-                    {% else %}
-                    <a href="{% url 'clinic:add_medical_record' checkin.patient.pk %}"
-                        class="btn btn-primary rounded-pill btn-sm">
-                        Add Medical Record
-                    </a>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if checkin.get_status_display == "waiting" %}
-                    <p class="text-primary">
-                        {{ checkin.get_status_display|title }}
-                    </p>
-                    {% elif checkin.get_status_display == "done" %}
-                    <p class="text-success">
-                        {{ checkin.get_status_display|title }}
-                    </p>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if checkin.medical_record %}
-                    {% if checkin.medical_record.payment %}
-                    <a href="{% url 'clinic:payment' checkin.pk %}"
-                        class="btn btn-success rounded-pill btn-sm disabled">
-                        RM{{ checkin.medical_record.price }}
-                    </a>
-                    {% else %}
-                    <a href="{% url 'clinic:payment' checkin.pk %}" class="btn btn-primary rounded-pill btn-sm">
-                        RM{{ checkin.medical_record.price }}
-                    </a>
-                    {% endif %}
-                    {% else %}
-                    <a href="{% url 'clinic:payment' checkin.pk %}"
-                        class="btn btn-primary rounded-pill btn-sm disabled">
-                        RM0.00
-                    </a>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
 
+    <div id="checkin-table-container" hx-get="{% url 'clinic:checkin_table' %}" hx-trigger="every 2s"
+        hx-swap="innerHTML">
+    </div>
+
+</div>
 
 {% endblock %}
