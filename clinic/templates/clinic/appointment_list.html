@@ -5,119 +5,20 @@
 <div class="container">
 
     <div class="d-flex justify-content-between align-items-center mb-3 py-3">
-        <h2 class="fw-bold">Appointment</h2>
+        <h2 class="fw-bold">Today's Appointment</h2>
     </div>
-    <table class="table table-striped">
-        <thead>
-            <tr class="table-info">
-                <th scope="col">No</th>
-                <th scope="col">Patient</th>
-                <th scope="col">Time Slot</th>
-                <th scope="col">Date</th>
-                <th scope="col">Check-In</th>
-                <th scope="col">Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for appointment in today_appointment %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</td>
-                <td>{{ appointment.get_time_slot_display }}</td>
-                <td>{{ appointment.date }}</td>
-                {% if appointment.get_status_display == "Completed" %}
-                <td>
-                    <a href="{% url 'clinic:move_to_checkin' appointment.pk %}"
-                        class="btn btn-success rounded-pill btn-sm disabled">
-                        Moved
-                    </a>
-                </td>
-                {% else %}
-                <td>
-                    <a href="{% url 'clinic:move_to_checkin' appointment.pk %}"
-                        class="btn btn-primary rounded-pill btn-sm">
-                        Move
-                    </a>
-                </td>
-
-                {% endif %}
-                {% if appointment.get_status_display == "Scheduled" %}
-                <td>
-                    <p class="text-primary">
-                        {{ appointment.get_status_display }}
-                    </p>
-                </td>
-                {% else %}
-                <td>
-                    <p class="text-success">
-                        {{ appointment.get_status_display }}
-                    </p>
-                </td>
-
-                {% endif %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
 </div>
+
+<div id="today-appointment-container" hx-get="{% url 'clinic:today_appointment' %}" hx-trigger="load, every 10s"
+    hx-swap="innerHTML"></div>
 
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-3 py-3">
-        <h2 class="fw-bold">Future's Appointment</h2>
+        <h2 class="fw-bold">Upcoming Appointments</h2>
     </div>
-    <table class="table table-striped">
-        <thead>
-            <tr class="table-secondary">
-                <th scope="col">No</th>
-                <th scope="col">Patient</th>
-                <th scope="col">Time Slot</th>
-                <th scope="col">Date</th>
-                <th scope="col">Check-In</th>
-                <th scope="col">Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for appointment in appointment_list %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</td>
-                <td>{{ appointment.get_time_slot_display }}</td>
-                <td>{{ appointment.date }}</td>
-                {% if appointment.get_status_display == "Completed" %}
-                <td>
-                    <a href="{% url 'clinic:move_to_checkin' appointment.pk %}"
-                        class="btn btn-success rounded-pill btn-sm disabled">
-                        Moved
-                    </a>
-                </td>
-                {% else %}
-                <td>
-                    <a href="{% url 'clinic:move_to_checkin' appointment.pk %}"
-                        class="btn btn-primary rounded-pill btn-sm disabled">
-                        Move
-                    </a>
-                </td>
-
-                {% endif %}
-                {% if appointment.get_status_display == "Scheduled" %}
-                <td>
-                    <p class="text-primary">
-                        {{ appointment.get_status_display }}
-                    </p>
-                </td>
-                {% else %}
-                <td>
-                    <p class="text-success">
-                        {{ appointment.get_status_display }}
-                    </p>
-                </td>
-
-                {% endif %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
 </div>
+
+<div id="future-appointment-list" hx-get="{% url 'clinic:future_appointment' %}" hx-trigger="load, every 10s"
+    hx-swap="innerHTML"></div>
+
 {% endblock %}

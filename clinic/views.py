@@ -200,20 +200,32 @@ def add_medical_record(request, pk):
 ########################### appointment handling ################################
 @login_required
 def appointment_list(request):
-    today = date.today()
-
-    """appointment list excluding today appointment"""
-    appointment_list = Appointment.objects.all().exclude(date=today).order_by("-date")
-
-    """today appointment only"""
-    today_appointment = Appointment.objects.filter(date=today)
-
     context = {
-        "today_appointment": today_appointment,
-        "appointment_list": appointment_list,
         "title": "List Of Appointment",
     }
     return render(request, "clinic/appointment_list.html", context)
+
+@login_required
+def today_appointment(request):
+    today = date.today()
+    today_appointment = Appointment.objects.filter(date=today)
+
+    context = {
+        "today_appointment" : today_appointment,
+    }
+
+    return render(request, "clinic/partials/today_appointment_table.html", context)
+
+@login_required
+def future_appointment(request):
+    today =date.today()
+    future_appointment= Appointment.objects.all().exclude(date=today).order_by("-date")
+
+    context = {
+        "future_appointment": future_appointment,
+    }
+
+    return render(request, "clinic/partials/future_appointment_table.html", context)
 
 
 @login_required

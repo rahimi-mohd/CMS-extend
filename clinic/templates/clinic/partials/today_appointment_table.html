@@ -1,0 +1,51 @@
+<table class="table table-striped">
+    <thead>
+        <tr class="table-info">
+            <th scope="col">No</th>
+            <th scope="col">Patient</th>
+            <th scope="col">Time Slot</th>
+            <th scope="col">Date</th>
+            <th scope="col">Check-In</th>
+            <th scope="col">Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for appointment in today_appointment %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</td>
+            <td>{{ appointment.get_time_slot_display }}</td>
+            <td>{{ appointment.date }}</td>
+            {% if appointment.get_status_display == "Completed" %}
+            <td>
+                <a href="{% url 'clinic:move_to_checkin' appointment.pk %}"
+                    class="btn btn-success rounded-pill btn-sm disabled">
+                    Moved
+                </a>
+            </td>
+            {% else %}
+            <td>
+                <a href="{% url 'clinic:move_to_checkin' appointment.pk %}" class="btn btn-primary rounded-pill btn-sm">
+                    Move
+                </a>
+            </td>
+
+            {% endif %}
+            {% if appointment.get_status_display == "Scheduled" %}
+            <td>
+                <p class="text-primary">
+                    {{ appointment.get_status_display }}
+                </p>
+            </td>
+            {% else %}
+            <td>
+                <p class="text-success">
+                    {{ appointment.get_status_display }}
+                </p>
+            </td>
+
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

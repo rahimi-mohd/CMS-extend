@@ -4,10 +4,10 @@
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="fw-bold">Check In List</h2>
+        <h2 class="fw-bold">Scheduled Check-Ins</h2>
     </div>
 
-    <div id="checkin-table-container" hx-get="{% url 'clinic:checkin_table' %}" hx-trigger="every 2s"
+    <div id="checkin-table-container" hx-get="{% url 'clinic:checkin_table' %}" hx-trigger="load, every 10s"
         hx-swap="innerHTML">
     </div>
 

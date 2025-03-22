@@ -31,9 +31,11 @@ urlpatterns = [
         name="add_appointment",
     ),
     path("appointment_list/", views.appointment_list, name="appointment_list"),
+    path("today_appointment/", views.today_appointment, name="today_appointment"),
+    path("future_appointment/", views.future_appointment, name="future_appointment"),
     ############## check in handling ##############
     path("checkin_list/", views.checkin_list, name="checkin_list"),
-    path("checkin_table", views.checkin_table, name="checkin_table"),
+    path("checkin_table/", views.checkin_table, name="checkin_table"),
     path(
         "patient_list/<int:pk>/patient_checkin/",
         views.add_checkin,
