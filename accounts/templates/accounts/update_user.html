@@ -7,15 +7,30 @@
     <fieldset class="form-group">
         <legend class="border-bottom mb-4">Edit User</legend>
         <form action="" method="post" enctype="multipart/form-data">
-            <div class="mb-3"></div>
             {% csrf_token %}
+
+            <!-- Profile Picture Preview -->
+            <div class="mb-3 text-center">
+                <div>
+                    {% if profile.profile_picture %}
+                    <img src="{{ profile.profile_picture.url }}" alt="Profile Picture"
+                        style="width: 180px; height: 180px; object-fit: cover; border: 3px solid #ccc;">
+                    {% else %}
+                    <img src="/media/images/default_dp.png" alt="Default Profile Picture"
+                        style="width: 180px; height: 180px; object-fit: cover; border: 3px solid #ccc;">
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- User Form -->
             {{ user_form|crispy }}
+
+            <!-- Profile Form -->
             {{ profile_form|crispy }}
+
             <button type="submit" class="btn btn-primary">Confirm</button>
         </form>
-
     </fieldset>
-
 </div>
 
 {% endblock %}

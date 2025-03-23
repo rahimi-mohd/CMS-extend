@@ -1,9 +1,8 @@
 {% load static %}
 <nav class="navbar bg-dark navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
     <div class="container-fluid">
-        <a class="navbar-brand main-header-title" href="{% url 'clinic:home' %}"><img
-                src="{% static 'clinic/main-logo.svg' %}" alt="logo">
-            CMS
+        <a class="navbar-brand main-header-title" href="{% url 'clinic:home' %}">
+            <img src="{% static 'clinic/main-logo.svg' %}" alt="logo"> CMS
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -12,12 +11,22 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        {{ user.username|title }}
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <!-- Profile Picture Only (Removed Username) -->
+                        <img src="{% if user.profile.profile_picture %}{{ user.profile.profile_picture.url }}{% else %}{% static 'images/default_dp.png' %}{% endif %}"
+                            alt="Profile Picture" class="rounded-circle"
+                            style="width: 35px; height: 35px; object-fit: cover; border: 2px solid #ccc;">
                     </a>
                     <ul class="dropdown-menu text-center dropdown-menu-end">
                         {% if user.is_authenticated %}
+                        <li>
+                            <!-- Larger Profile Picture in Dropdown -->
+                            <img src="{% if user.profile.profile_picture %}{{ user.profile.profile_picture.url }}{% else %}{% static 'images/default_dp.png' %}{% endif %}"
+                                alt="Profile Picture" class="rounded-circle my-2"
+                                style="width: 50px; height: 50px; object-fit: cover; border: 2px solid #ccc;">
+                        </li>
+                        <li><strong>{{ user.username|title }}</strong></li>
                         <li><a class="dropdown-item" href="{% url 'accounts:user_profile' user.pk %}">Profile</a></li>
                         <li><a class="dropdown-item" href="{% url 'clinic:inventory_list' %}">Inventory</a></li>
                         {% if user.is_staff %}

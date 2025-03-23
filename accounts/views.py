@@ -60,29 +60,30 @@ def user_list(request):
 
     return render(request, "accounts/user_list.html", context)
 
-
 @login_required
 def update_user_profile(request, pk):
-    """Allow only admin users to access this page"""
-    if not request.user.is_superuser and not request.user.is_staff:
-        messages.error(request, "You need admin privileges to update user profiles.")
-        return redirect("accounts:user_list")
-
     """Get or create profile if it doesn't exist"""
     user_profile, created = Profile.objects.get_or_create(user_id=pk)
 
     if created:
         messages.warning(request, "A new profile was created for this user.")
 
+    """Check if the user is allowed to edit"""
+    if not request.user.is_superuser and request.user.profile.user_type != "admin":
+        # If not an admin, only allow editing their own profile
+        if request.user.pk != user_profile.user.pk:
+            messages.error(request, "You can only edit your own profile.")
+            return redirect("accounts:edit_profile", pk=request.user.pk)  # Redirect to their own edit profile page
+
     if request.method == "POST":
         user_form = EditUserForm(request.POST, instance=user_profile.user)
-        profile_form = EditProfileForm(request.POST, request.FILES, instance=user_profile)  # Include request.FILES
+        profile_form = EditProfileForm(request.POST, request.FILES, instance=user_profile)
 
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
             messages.success(request, "Profile updated successfully!")
-            return redirect("accounts:user_list")
+            return redirect("accounts:user_list" if request.user.profile.user_type == "admin" else "accounts:user_profile", pk=request.user.pk)
         else:
             messages.error(request, "Please correct the errors below.")
     else:

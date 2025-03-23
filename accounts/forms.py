@@ -33,6 +33,9 @@ class EditProfileForm(ModelForm):
     class Meta:
         model = Profile
         fields = ["phone_number", "ic_number", "profile_picture"]
+        widgets = {
+            "profile_picture": forms.FileInput()
+        }
 
 
 class EditUserForm(ModelForm):
