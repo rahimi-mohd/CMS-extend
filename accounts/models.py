@@ -18,5 +18,9 @@ class Profile(models.Model):
     ic_number = models.CharField(max_length=12, unique=True, null=True, blank=True)
     register_date = models.DateTimeField(default=timezone.now)
 
+    profile_picture = models.ImageField(
+        upload_to="images/", default="images/default_dp.png", null=True, blank=True
+    )
+
     def __str__(self):
         return self.user.username

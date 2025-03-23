@@ -4,54 +4,57 @@
 
 <div class="container mt-4">
     <div class="card">
-        <div class="card-header bg-primary text-white">
-            {% if user.profile.get_user_type_display == "Clinic Staff" %}
-            <h4 class="card-title">Staff Profile</h4>
-            {% elif user.profile.get_user_type_display == "Doctor" %}
-            <h4 class="card-title">Doctor Profile</h4>
-            {% elif user.is_staff %}
-            <h4 class="card-title">Admin Profile</h4>
-            {% endif %}
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <!-- Professional Profile Title -->
+            <h4 class="card-title">User Profile</h4>
+
+            <!-- Profile Picture + Username -->
+            <div class="text-center">
+                <img src="{% if profile_user.profile.profile_picture %}{{ profile_user.profile.profile_picture.url }}{% else %}/media/images/default_dp.png{% endif %}"
+                    alt="{{ profile_user.username }}" class="rounded-circle border border-light mb-2"
+                    style="width: 90px; height: 90px; object-fit: cover;">
+
+                <p class="fw-bold mb-0">{{ profile_user.username }}</p>
+            </div>
         </div>
+
         <div class="card-body">
             <div class="row mb-3">
-                <div class="col-sm-3"><strong>Username</strong></div>
-                <div class="col-sm-9">{{ user.username }}</div>
-            </div>
-            <div class="row mb-3">
                 <div class="col-sm-3"><strong>Full Name</strong></div>
-                <div class="col-sm-9">{{ user.first_name|title }} {{ user.last_name|title }}</div>
+                <div class="col-sm-9">{{ profile_user.first_name|title }} {{ profile_user.last_name|title }}</div>
             </div>
 
             <div class="row mb-3">
-                <div class="col-sm-3"><strong>Staff Status</strong></div>
-                <div class="col-sm-9">{{ user.profile.get_user_type_display }}</div>
+                <div class="col-sm-3"><strong>Role</strong></div>
+                <div class="col-sm-9">{{ profile_user.profile.get_user_type_display }}</div>
             </div>
 
             <div class="row mb-3">
                 <div class="col-sm-3"><strong>Email</strong></div>
-                <div class="col-sm-9">{{ user.email }}</div>
+                <div class="col-sm-9">{{ profile_user.email }}</div>
             </div>
 
             <div class="row mb-3">
                 <div class="col-sm-3"><strong>IC Number</strong></div>
-                <div class="col-sm-9">{{ user.profile.ic_number }}</div>
+                <div class="col-sm-9">{{ profile_user.profile.ic_number }}</div>
             </div>
 
             <div class="row mb-3">
-                <div class="col-sm-3"><strong>Tel Number</strong></div>
-                <div class="col-sm-9">{{ user.profile.phone_number }}</div>
+                <div class="col-sm-3"><strong>Phone Number</strong></div>
+                <div class="col-sm-9">{{ profile_user.profile.phone_number }}</div>
             </div>
 
             <div class="row">
                 <div class="col-sm-3"><strong>Register Date & Time</strong></div>
-                <div class="col-sm-9">{{ user.profile.register_date }}</div>
+                <div class="col-sm-9">{{ profile_user.profile.register_date }}</div>
             </div>
         </div>
     </div>
-    <!-- edit profile button -->
+
+    <!-- Edit Profile Button -->
     <div class="container pt-5 text-end">
-        <a class="btn rounded-pill btn-primary btn-sm" href="{% url 'accounts:edit_profile' user.pk %}" role="button">
+        <a class="btn rounded-pill btn-primary btn-sm" href="{% url 'accounts:edit_profile' profile_user.pk %}"
+            role="button">
             Edit Profile
         </a>
     </div>

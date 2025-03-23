@@ -32,7 +32,7 @@ class CustomUserCreationForm(UserCreationForm):
 class EditProfileForm(ModelForm):
     class Meta:
         model = Profile
-        fields = ["phone_number", "ic_number"]
+        fields = ["phone_number", "ic_number", "profile_picture"]
 
 
 class EditUserForm(ModelForm):

@@ -30,10 +30,10 @@ def register_user(request):
 
 @login_required
 def user_profile(request, pk):
-    user = get_object_or_404(User, pk=pk)
+    profile_user = get_object_or_404(User, pk=pk)
     context = {
-        "user": user,
-        "title": f"{user.username}'s Profile",
+        "profile_user": profile_user,
+        "title": f"{profile_user.username}'s Profile",
     }
     return render(request, "accounts/user_profile.html", context)
 
@@ -63,35 +63,31 @@ def user_list(request):
 
 @login_required
 def update_user_profile(request, pk):
-    """check if current logged in user is admin"""
+    """Allow only admin users to access this page"""
     if not request.user.is_superuser and not request.user.is_staff:
-        messages.error(request, "You have to be admin to access this page.")
+        messages.error(request, "You need admin privileges to update user profiles.")
         return redirect("accounts:user_list")
 
-    """check if user already have a profile or not
-    if not, create new profile for user
-    Scenario: createsuperuser command create only the base user, not the profile,
-    Register user without the profile also possible using the admin page."""
-    try:
-        user_profile = Profile.objects.get(user_id=pk)
-    except Profile.DoesNotExist:
-        user_profile = Profile.objects.create(user_id=pk)
-        messages.warning(
-            request,
-            "Profile did't exist for this user, a new profile has been created.",
-        )
+    """Get or create profile if it doesn't exist"""
+    user_profile, created = Profile.objects.get_or_create(user_id=pk)
+
+    if created:
+        messages.warning(request, "A new profile was created for this user.")
 
     if request.method == "POST":
         user_form = EditUserForm(request.POST, instance=user_profile.user)
-        profile_form = EditProfileForm(request.POST, instance=user_profile)
+        profile_form = EditProfileForm(request.POST, request.FILES, instance=user_profile)  # Include request.FILES
+
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            messages.success(request, "Profile updated.")
+            messages.success(request, "Profile updated successfully!")
             return redirect("accounts:user_list")
+        else:
+            messages.error(request, "Please correct the errors below.")
     else:
-        user_form = EditUserForm()
-        profile_form = EditProfileForm()
+        user_form = EditUserForm(instance=user_profile.user)
+        profile_form = EditProfileForm(instance=user_profile)
 
     context = {
         "profile": user_profile,
