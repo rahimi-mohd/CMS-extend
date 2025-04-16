@@ -2,18 +2,20 @@
 {% load crispy_forms_tags %}
 
 {% block main %}
-
-<div class="container-flex m-4">
-    <fieldset class="form-group">
-      <legend class="border-bottom mb-4">Add Stock For {{ medicine.name }}</legend>
-        <form action="" method="post">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <button type="submit" class="btn btn-primary">Amount</button>
-        </form>
-
-    </fieldset>
-
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Add Stock for {{ medicine.name }}</h4>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="text-end mt-4">
+                    <button type="submit" class="btn btn-primary rounded-pill">Add Stock</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
-
 {% endblock %}

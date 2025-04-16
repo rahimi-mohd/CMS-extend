@@ -1,50 +1,60 @@
 {% load static %}
-<nav class="navbar bg-dark navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+<nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
     <div class="container-fluid">
-        <a class="navbar-brand main-header-title" href="{% url 'clinic:home' %}">
-            <img src="{% static 'clinic/main-logo.svg' %}" alt="logo"> CMS
+        <!-- Logo and Brand -->
+        <a class="navbar-brand d-flex align-items-center" href="{% url 'clinic:home' %}">
+            <img src="{% static 'clinic/main-logo.svg' %}" alt="CMS Logo" width="32" height="32" class="me-2">
+            <span class="fw-bold text-white">CMS</span>
         </a>
+
+        <!-- Toggler -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+
+        <!-- Navbar Links -->
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
+                {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <!-- Profile Picture Only (Removed Username) -->
+                    <!-- Profile Picture Only -->
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown"
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <img src="{% if user.profile.profile_picture %}{{ user.profile.profile_picture.url }}{% else %}{% static 'images/default_dp.png' %}{% endif %}"
-                            alt="Profile Picture" class="rounded-circle"
-                            style="width: 35px; height: 35px; object-fit: cover; border: 2px solid #ccc;">
+                            alt="Profile" class="rounded-circle border"
+                            style="width: 35px; height: 35px; object-fit: cover;">
                     </a>
-                    <ul class="dropdown-menu text-center dropdown-menu-end">
-                        {% if user.is_authenticated %}
+
+                    <!-- Dropdown Menu -->
+                    <ul class="dropdown-menu dropdown-menu-end text-center" aria-labelledby="navbarDropdown">
                         <li>
-                            <!-- Larger Profile Picture in Dropdown -->
                             <img src="{% if user.profile.profile_picture %}{{ user.profile.profile_picture.url }}{% else %}{% static 'images/default_dp.png' %}{% endif %}"
-                                alt="Profile Picture" class="rounded-circle my-2"
-                                style="width: 50px; height: 50px; object-fit: cover; border: 2px solid #ccc;">
+                                alt="Profile" class="rounded-circle my-2"
+                                style="width: 60px; height: 60px; object-fit: cover; border: 2px solid #dee2e6;">
                         </li>
-                        <li><strong>{{ user.username|title }}</strong></li>
+                        <li class="fw-semibold">{{ user.username|title }}</li>
                         <li><a class="dropdown-item" href="{% url 'accounts:user_profile' user.pk %}">Profile</a></li>
                         <li><a class="dropdown-item" href="{% url 'clinic:inventory_list' %}">Inventory</a></li>
+
                         {% if user.is_staff %}
                         <li><a class="dropdown-item" href="{% url 'accounts:user_list' %}">Staff List</a></li>
                         <li><a class="dropdown-item" href="{% url 'accounts:register_user' %}">Register User</a></li>
                         {% endif %}
+
                         <li>
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <form class="dropdown-item" action="{% url 'accounts:logout' %}" method="post">
+                            <form action="{% url 'accounts:logout' %}" method="post" class="d-inline">
                                 {% csrf_token %}
-                                <button class="btn btn-outline-danger" type="submit">Logout</button>
+                                <button type="submit" class="dropdown-item text-danger">Logout</button>
                             </form>
                         </li>
-                        {% endif %}
                     </ul>
                 </li>
+                {% endif %}
             </ul>
         </div>
     </div>

@@ -2,59 +2,53 @@
 
 {% block main %}
 
-<div class="container mt-4">
-    <div class="card">
+<div class="container mt-5">
+    <div class="card shadow">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <!-- Professional Profile Title -->
-            <h4 class="card-title">User Profile</h4>
-
-            <!-- Profile Picture + Username -->
+            <h4 class="mb-0">User Profile</h4>
             <div class="text-center">
                 <img src="{% if profile_user.profile.profile_picture %}{{ profile_user.profile.profile_picture.url }}{% else %}/media/images/default_dp.png{% endif %}"
-                    alt="{{ profile_user.username }}" class="rounded-circle border border-light mb-2"
-                    style="width: 90px; height: 90px; object-fit: cover;">
-
-                <p class="fw-bold mb-0">{{ profile_user.username }}</p>
+                    alt="{{ profile_user.username }}" class="rounded-circle border border-light"
+                    style="width: 80px; height: 80px; object-fit: cover;">
+                <p class="fw-bold mb-0 mt-2">{{ profile_user.username }}</p>
             </div>
         </div>
 
         <div class="card-body">
             <div class="row mb-3">
-                <div class="col-sm-3"><strong>Full Name</strong></div>
+                <div class="col-sm-3 fw-semibold">Full Name</div>
                 <div class="col-sm-9">{{ profile_user.first_name|title }} {{ profile_user.last_name|title }}</div>
             </div>
 
             <div class="row mb-3">
-                <div class="col-sm-3"><strong>Role</strong></div>
+                <div class="col-sm-3 fw-semibold">Role</div>
                 <div class="col-sm-9">{{ profile_user.profile.get_user_type_display }}</div>
             </div>
 
             <div class="row mb-3">
-                <div class="col-sm-3"><strong>Email</strong></div>
+                <div class="col-sm-3 fw-semibold">Email</div>
                 <div class="col-sm-9">{{ profile_user.email }}</div>
             </div>
 
             <div class="row mb-3">
-                <div class="col-sm-3"><strong>IC Number</strong></div>
+                <div class="col-sm-3 fw-semibold">IC Number</div>
                 <div class="col-sm-9">{{ profile_user.profile.ic_number }}</div>
             </div>
 
             <div class="row mb-3">
-                <div class="col-sm-3"><strong>Phone Number</strong></div>
+                <div class="col-sm-3 fw-semibold">Phone Number</div>
                 <div class="col-sm-9">{{ profile_user.profile.phone_number }}</div>
             </div>
 
             <div class="row">
-                <div class="col-sm-3"><strong>Register Date & Time</strong></div>
+                <div class="col-sm-3 fw-semibold">Register Date & Time</div>
                 <div class="col-sm-9">{{ profile_user.profile.register_date }}</div>
             </div>
         </div>
     </div>
 
-    <!-- Edit Profile Button -->
-    <div class="container pt-5 text-end">
-        <a class="btn rounded-pill btn-primary btn-sm" href="{% url 'accounts:edit_profile' profile_user.pk %}"
-            role="button">
+    <div class="mt-4 text-end">
+        <a href="{% url 'accounts:edit_profile' profile_user.pk %}" class="btn btn-primary rounded-pill btn-sm">
             Edit Profile
         </a>
     </div>

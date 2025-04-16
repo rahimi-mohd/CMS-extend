@@ -2,24 +2,23 @@
 {% load crispy_forms_tags %}
 
 {% block main %}
-
-<div class="container-flex m-4">
-    <fieldset class="form-group">
-        <legend class="border-bottom mb-4">{{ checkin.patient.first_name }} - Medical Record ({{ checkin.date }})
-        </legend>
-        <form action="" method="post">
-            <div class="mb-3"></div>
-            {% csrf_token %}
-            {% block form %}
-            {% endblock %}
-            {{ form|crispy }}
-            <div class="container pt-3 text-end">
-                <button type="submit" class="btn rounded-pill btn-primary">Add</button>
-            </div>
-        </form>
-
-    </fieldset>
-
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">
+                {{ checkin.patient.first_name }} - Medical Record ({{ checkin.date }})
+            </h4>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {% block form %}{% endblock %}
+                {{ form|crispy }}
+                <div class="text-end mt-4">
+                    <button type="submit" class="btn btn-primary rounded-pill">Add Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
-
 {% endblock %}
