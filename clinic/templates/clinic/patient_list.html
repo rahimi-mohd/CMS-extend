@@ -1,50 +1,57 @@
 {% extends "clinic/base.html" %}
 
 {% block main %}
-
-
-
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="fw-bold">Patient List</h2>
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold main-header-title">Patient List</h2>
+        <a class="btn btn-sm btn-outline-primary rounded-pill" href="{% url 'clinic:register_patient' %}">
+            + Register New Patient
+        </a>
     </div>
-    <!--search form-->
-    <div class="container-flex mt-4 pb-4">
+
+    <!-- Search Form -->
+    <div class="card p-3 mb-4 shadow-sm">
         <form method="GET" class="d-flex">
             <input type="text" name="search" value="{{ search_query }}" placeholder="Search patient"
-                class="form-control me-4" />
+                class="form-control me-3" />
             <button type="submit" class="btn btn-primary rounded-pill">Search</button>
         </form>
     </div>
-    <!--patient table-->
-    <table class="table table-striped" id="patient-list">
-        <thead>
-            <tr class="table-info">
-                <th>#</th>
-                <th>Full Name</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for patient in patients %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ patient.first_name|title }} {{ patient.last_name|title }}</td>
-                <td>
-                    <a href="{% url 'clinic:patient_data' patient.pk %}" class="btn btn-primary rounded-pill btn-sm">
-                        View
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
 
-<div class="container pt-5 text-end">
-    <a class="btn rounded-pill btn-primary btn-sm" href="{% url 'clinic:register_patient' %}" role="button">
-        Register New Patient
-    </a>
-</div>
+    <!-- Patient Table -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Full Name</th>
+                        <th scope="col" class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for patient in patients %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ patient.first_name|title }} {{ patient.last_name|title }}</td>
+                        <td class="text-end">
+                            <a href="{% url 'clinic:patient_data' patient.pk %}"
+                                class="btn btn-sm btn-outline-primary rounded-pill">
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center text-muted">No patients found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 
+</div>
 {% endblock %}

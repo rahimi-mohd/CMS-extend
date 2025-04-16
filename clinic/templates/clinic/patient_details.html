@@ -2,149 +2,143 @@
 
 {% block main %}
 
+<!-- Patient Profile Card -->
 <div class="container mt-4">
-    <div class="card">
+    <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
-            <h4 class="card-title">Patient Profile</h4>
+            <h4 class="card-title mb-0">Patient Profile</h4>
         </div>
         <div class="card-body">
             <div class="row mb-3">
-                <div class="col-sm-3"><strong>Full Name</strong></div>
+                <div class="col-sm-3 fw-semibold">Full Name</div>
                 <div class="col-sm-9">{{ patient.first_name|title }} {{ patient.last_name|title }}</div>
             </div>
-
             <div class="row mb-3">
-                <div class="col-sm-3"><strong>Email</strong></div>
+                <div class="col-sm-3 fw-semibold">Email</div>
                 <div class="col-sm-9">{{ patient.email }}</div>
             </div>
-
             <div class="row mb-3">
-                <div class="col-sm-3"><strong>IC Number</strong></div>
+                <div class="col-sm-3 fw-semibold">IC Number</div>
                 <div class="col-sm-9">{{ patient.ic_number }}</div>
             </div>
-
             <div class="row mb-3">
-                <div class="col-sm-3"><strong>Tel Number</strong></div>
+                <div class="col-sm-3 fw-semibold">Tel Number</div>
                 <div class="col-sm-9">{{ patient.phone_number }}</div>
             </div>
-
             <div class="row">
-                <div class="col-sm-3"><strong>Register Date & Time</strong></div>
+                <div class="col-sm-3 fw-semibold">Register Date & Time</div>
                 <div class="col-sm-9">{{ patient.register_date }}</div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- checkin patient -->
-<div class="container pt-5 text-end">
-    <a class="btn rounded-pill btn-primary btn-sm" href="{% url 'clinic:patient_checkin' patient.pk %}" role="button">
-        Check In
-    </a>
-</div>
-
-<!-- medical records -->
-<div class="container p-5">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="fw-bold">{{ patient.first_name }}'s Medical Records</h2>
-    </div>
-    <div class="container">
-        <table class="table table-striped-columns">
-            <thead>
-                <tr class="table-info">
-                    <th scope="col">No</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Title</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Handle by</th>
-                    <th scope="col">Prescriptions</th>
-                    <th scope="col">Medical Leaves</th>
-                    <th scope="col">Price</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for record in medical_records %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ record.record_date }}</td>
-                    <td>{{ record.title}}</td>
-                    <td>{{ record.description}}</td>
-                    <td>{{ record.doctor }}</td>
-                    <td>
-                        <ul>
-                            {% for med in record.medicine.all %}
-                            <li>{{ med }}</li>
-                            {% empty %}
-                            <li>No medicines</li>
-                            {% endfor %}
-                        </ul>
-                    </td>
-                    <td>{{ record.medical_leave}} Days</td>
-                    <td>RM{{ record.price }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td><em>No Past Medical Records</em></td>
-                    <td></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-
-
-<!-- past appointment -->
-<div class="container p-5">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="fw-bold">{{ patient.first_name }}'s Past Appointment Records</h2>
-    </div>
-    <table class="table table-striped-columns">
-        <thead>
-            <tr class="table-info">
-                <th scope="col">No</th>
-                <th scope="col">Patient</th>
-                <th scope="col">Time Slot</th>
-                <th scope="col">Date</th>
-                <th scope="col">Status</th>
-
-            </tr>
-        </thead>
-        <tbody>
-            {% for appointment in past_appointments %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</td>
-                <td>{{ appointment.get_time_slot_display }}</td>
-                <td>{{ appointment.date }}</td>
-                {% if appointment.status == 2 %}
-                <td class="table-success">{{ appointment.get_status_display }}</td>
-                {% elif appointment.status == 3 %}
-                <td class="table-danger">{{ appointment.get_status_display }}</td>
-                {% endif %}
-            </tr>
-            {% empty %}
-            <tr>
-                <td></td>
-                <td><em>No Past Appointment</em></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <div class="container pt-5 text-end">
-        <a class="btn rounded-pill btn-primary btn-sm" href="{% url 'clinic:add_appointment' patient.pk %}"
-            role="button">
-            Add Appointment
+    <!-- Check In Button -->
+    <div class="text-end mt-3">
+        <a class="btn btn-sm btn-outline-primary rounded-pill" href="{% url 'clinic:patient_checkin' patient.pk %}">
+            Check In
         </a>
     </div>
 </div>
 
+<!-- Medical Records Section -->
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold">{{ patient.first_name }}'s Medical Records</h4>
+    </div>
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>No</th>
+                        <th>Date</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Handled By</th>
+                        <th>Prescriptions</th>
+                        <th>Medical Leaves</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in medical_records %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ record.record_date }}</td>
+                        <td>{{ record.title }}</td>
+                        <td>{{ record.description }}</td>
+                        <td>{{ record.doctor }}</td>
+                        <td>
+                            <ul class="mb-0">
+                                {% for med in record.medicine.all %}
+                                <li>{{ med }}</li>
+                                {% empty %}
+                                <li>No medicines</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>{{ record.medical_leave }} Days</td>
+                        <td>RM{{ record.price }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted"><em>No Past Medical Records</em></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
+<!-- Past Appointments Section -->
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold">{{ patient.first_name }}'s Past Appointments</h4>
+    </div>
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>No</th>
+                        <th>Patient</th>
+                        <th>Time Slot</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appointment in past_appointments %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</td>
+                        <td>{{ appointment.get_time_slot_display }}</td>
+                        <td>{{ appointment.date }}</td>
+                        {% if appointment.status == 2 %}
+                        <td class="text-success fw-semibold">{{ appointment.get_status_display }}</td>
+                        {% elif appointment.status == 3 %}
+                        <td class="text-danger fw-semibold">{{ appointment.get_status_display }}</td>
+                        {% else %}
+                        <td>{{ appointment.get_status_display }}</td>
+                        {% endif %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted"><em>No Past Appointments</em></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 
+    <!-- Add Appointment Button -->
+    <div class="text-end mt-3">
+        <a class="btn btn-sm btn-outline-primary rounded-pill" href="{% url 'clinic:add_appointment' patient.pk %}">
+            Add Appointment
+        </a>
+    </div>
+</div>
 
 {% endblock %}

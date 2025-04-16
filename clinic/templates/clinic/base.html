@@ -3,7 +3,7 @@
 
 {% include "clinic/head.html" %}
 
-<body style="background-color: lightblue;">
+<body class="bg-light">
 
     <!-- Fixed Top Bar -->
     <div class="bg-dark text-light" style="position: fixed; top: 0; left: 0; width: 100%; z-index: 1030;">
@@ -43,7 +43,8 @@
             </div>
 
             <!-- Main Dashboard -->
-            <div class="container bg-light pb-5 mt-4" style="border: 7px inset rgb(167, 164, 164);">
+            <div class="container bg-light pb-5 mt-4">
+
                 {% block main %}
                 {% endblock %}
             </div>

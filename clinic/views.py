@@ -219,7 +219,7 @@ def today_appointment(request):
 @login_required
 def future_appointment(request):
     today =date.today()
-    future_appointment= Appointment.objects.all().exclude(date=today).order_by("-date")
+    future_appointment = Appointment.objects.filter(date__gt=today).order_by("date")
 
     context = {
         "future_appointment": future_appointment,

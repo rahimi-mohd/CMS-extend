@@ -1,24 +1,51 @@
 {% extends "clinic/base.html" %}
 
 {% block main %}
+<style>
+    .section-card {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: #333;
+    }
+
+    body {
+        background-color: #f8f9fa;
+    }
+
+    table thead {
+        background-color: #e9f6fa;
+    }
+
+    table {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+</style>
 
 <div class="container">
 
-    <div class="d-flex justify-content-between align-items-center mb-3 py-3">
-        <h2 class="fw-bold">Today's Appointment</h2>
+    <!-- Today's Appointment -->
+    <div class="section-card">
+        <h2 class="section-title">Today's Appointment</h2>
+        <div id="today-appointment-container" hx-get="{% url 'clinic:today_appointment' %}" hx-trigger="load, every 10s"
+            hx-swap="innerHTML"></div>
     </div>
-</div>
 
-<div id="today-appointment-container" hx-get="{% url 'clinic:today_appointment' %}" hx-trigger="load, every 10s"
-    hx-swap="innerHTML"></div>
-
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-3 py-3">
-        <h2 class="fw-bold">Upcoming Appointments</h2>
+    <!-- Upcoming Appointments -->
+    <div class="section-card">
+        <h2 class="section-title">Upcoming Appointments</h2>
+        <div id="future-appointment-list" hx-get="{% url 'clinic:future_appointment' %}" hx-trigger="load, every 10s"
+            hx-swap="innerHTML"></div>
     </div>
+
 </div>
-
-<div id="future-appointment-list" hx-get="{% url 'clinic:future_appointment' %}" hx-trigger="load, every 10s"
-    hx-swap="innerHTML"></div>
-
 {% endblock %}
